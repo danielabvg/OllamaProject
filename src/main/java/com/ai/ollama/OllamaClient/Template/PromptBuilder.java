@@ -21,10 +21,13 @@ public class PromptBuilder {
     }
 
     public PromptBuilder agregarEjemplo(String entrada, String salida) {
-        this.ejemplos.add(String.format(
+
+        ejemplos.add(String.format(
                 "<ejemplo>\nEntrada: %s\nSalida: %s\n</ejemplo>",
-                entrada, salida
+                entrada,
+                salida
         ));
+
         return this;
     }
 
@@ -43,14 +46,18 @@ public class PromptBuilder {
         sb.append("</system>\n");
 
         if (!ejemplos.isEmpty()) {
+
             sb.append("<ejemplos>\n");
-            ejemplos.forEach(e -> sb.append(e).append("\n"));
+
+            ejemplos.forEach(e ->
+                    sb.append(e).append("\n"));
+
             sb.append("</ejemplos>\n");
         }
 
-        sb.append("<user>\n")
-                .append(entradaUsuario)
-                .append("\n</user>");
+        sb.append("<user>\n");
+        sb.append(entradaUsuario);
+        sb.append("\n</user>");
 
         return sb.toString();
     }

@@ -2,38 +2,38 @@ package com.ai.ollama.OllamaClient.IntentRouting;
 
 public class IntentRouter {
 
-    public String determinarRol(String instruccionesUsuario) {
-        String input = instruccionesUsuario.toLowerCase();
+    public String determinarRol(String input) {
 
-        if (input.contains("clima") || input.contains("tiempo")) {
-            return "Meteorólogo Profesional Certificado";
+        input = input.toLowerCase();
+
+        if (input.contains("java")
+                || input.contains("patrón")) {
+
+            return "Arquitecto de Software Senior";
         }
-        if (input.contains("patrón") || input.contains("código") || input.contains("java")) {
-            return "Arquitecto de Software Senior y experto en Clean Code";
-        }
-        if (input.contains("tarea") || input.contains("explica")) {
+
+        if (input.contains("ia")
+                || input.contains("inteligencia artificial")) {
+
             return "Profesor de Inteligencia Artificial";
+        }
+
+        if (input.contains("clima")) {
+
+            return "Meteorólogo Profesional";
         }
 
         return "Asistente Virtual General";
     }
 
-    public String optimizarInstrucciones(String instrucciones) {
+    public String optimizarInstrucciones(String input) {
 
-        String input = instrucciones.toLowerCase();
+        if (input.toLowerCase().contains("ia")) {
 
-        if (input.contains("clima")) {
-            return instrucciones + " (Responde solo con la temperatura y condición)";
+            return input
+                    + " Explica con ejemplos sencillos.";
         }
 
-        if (input.contains("inteligencia artificial") || input.contains("ia")) {
-            return instrucciones + " (Explica con ejemplos y analogías)";
-        }
-
-        if (input.contains("videojuegos") || input.contains("gaming")) {
-            return instrucciones + " (Incluye referencias a juegos populares)";
-        }
-
-        return instrucciones;
+        return input;
     }
 }

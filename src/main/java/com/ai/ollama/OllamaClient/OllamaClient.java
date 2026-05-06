@@ -8,12 +8,20 @@ import java.time.Duration;
 
 public class OllamaClient {
 
-    private static final String URL_API = "http://localhost:11434/api/generate";
+    private static final String URL_API =
+            "http://localhost:11434/api/generate";
 
-    public String enviarPeticion(String modelo, String promptEstructurado) {
+    public String enviarPeticion(String modelo,
+                                 String promptEstructurado) {
 
         String jsonBody = String.format(
-                "{\"model\":\"%s\",\"prompt\":\"%s\",\"stream\":false}",
+                """
+                {
+                  "model": "%s",
+                  "prompt": "%s",
+                  "stream": false
+                }
+                """,
                 modelo,
                 promptEstructurado
                         .replace("\"", "\\\"")
@@ -21,6 +29,7 @@ public class OllamaClient {
         );
 
         try {
+
             HttpClient client = HttpClient.newBuilder()
                     .connectTimeout(Duration.ofSeconds(10))
                     .build();
@@ -32,12 +41,17 @@ public class OllamaClient {
                     .build();
 
             HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
+                    client.send(
+                            request,
+                            HttpResponse.BodyHandlers.ofString()
+                    );
 
             return response.body();
 
         } catch (Exception e) {
-            return "Error de conexión: " + e.getMessage();
+
+            return "Error de conexión: "
+                    + e.getMessage();
         }
     }
 }

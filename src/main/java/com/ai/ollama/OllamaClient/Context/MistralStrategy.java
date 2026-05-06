@@ -5,7 +5,7 @@ import com.ai.ollama.OllamaClient.Strategy.IAStrategy;
 import com.ai.ollama.OllamaClient.Template.PromptBuilder;
 import com.ai.ollama.OllamaClient.Template.PromptConfig;
 
-public class Llama3Strategy implements IAStrategy {
+public class MistralStrategy implements IAStrategy {
 
     private final OllamaClient cliente =
             new OllamaClient();
@@ -21,7 +21,7 @@ public class Llama3Strategy implements IAStrategy {
 
         String json =
                 cliente.enviarPeticion(
-                        "llama3",
+                        "mistral",
                         promptFinal
                 );
 
@@ -30,7 +30,7 @@ public class Llama3Strategy implements IAStrategy {
 
     @Override
     public String getNombreModelo() {
-        return "Llama3";
+        return "Mistral";
     }
 
     private String extraerRespuesta(String json) {
