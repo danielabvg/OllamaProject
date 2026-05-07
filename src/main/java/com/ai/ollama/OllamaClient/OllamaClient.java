@@ -11,8 +11,10 @@ public class OllamaClient {
     private static final String URL_API =
             "http://localhost:11434/api/generate";
 
-    public String enviarPeticion(String modelo,
-                                 String promptEstructurado) {
+    public String enviarPeticion(
+            String modelo,
+            String prompt
+    ) {
 
         String jsonBody = String.format(
                 """
@@ -23,27 +25,38 @@ public class OllamaClient {
                 }
                 """,
                 modelo,
-                promptEstructurado
+                prompt
                         .replace("\"", "\\\"")
                         .replace("\n", "\\n")
         );
 
         try {
 
-            HttpClient client = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(10))
-                    .build();
+            HttpClient client =
+                    HttpClient.newBuilder()
+                            .connectTimeout(
+                                    Duration.ofSeconds(20)
+                            )
+                            .build();
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(URL_API))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                    .build();
+            HttpRequest request =
+                    HttpRequest.newBuilder()
+                            .uri(URI.create(URL_API))
+                            .header(
+                                    "Content-Type",
+                                    "application/json"
+                            )
+                            .POST(
+                                    HttpRequest.BodyPublishers
+                                            .ofString(jsonBody)
+                            )
+                            .build();
 
             HttpResponse<String> response =
                     client.send(
                             request,
-                            HttpResponse.BodyHandlers.ofString()
+                            HttpResponse.BodyHandlers
+                                    .ofString()
                     );
 
             return response.body();

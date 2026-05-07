@@ -5,7 +5,7 @@ import com.ai.ollama.OllamaClient.Strategy.IAStrategy;
 import com.ai.ollama.OllamaClient.Template.PromptBuilder;
 import com.ai.ollama.OllamaClient.Template.PromptConfig;
 
-public class MistralStrategy
+public class Phi3Strategy
         extends BaseStrategy
         implements IAStrategy {
 
@@ -28,7 +28,7 @@ public class MistralStrategy
 
         String json =
                 cliente.enviarPeticion(
-                        "mistral",
+                        "phi3:mini",
                         prompt
                 );
 
@@ -37,6 +37,6 @@ public class MistralStrategy
 
     @Override
     public String getNombreModelo() {
-        return "Mistral";
+        return "Phi3 Mini";
     }
 }

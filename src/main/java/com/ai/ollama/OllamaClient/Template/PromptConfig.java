@@ -6,7 +6,11 @@ public class PromptConfig {
     private String instrucciones;
     private String entrada;
 
-    public PromptConfig(String rol, String instrucciones, String entrada) {
+    public PromptConfig(
+            String rol,
+            String instrucciones,
+            String entrada
+    ) {
         this.rol = rol;
         this.instrucciones = instrucciones;
         this.entrada = entrada;

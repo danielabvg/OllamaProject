@@ -1,8 +1,6 @@
 package com.ai.ollama.OllamaClient.main;
 
-import com.ai.ollama.OllamaClient.Context.AgenteConversacional;
-import com.ai.ollama.OllamaClient.Context.Llama3Strategy;
-import com.ai.ollama.OllamaClient.Context.MistralStrategy;
+import com.ai.ollama.OllamaClient.Context.*;
 import com.ai.ollama.OllamaClient.PromptingEngine.Impl.GeneradorPrompt;
 import com.ai.ollama.OllamaClient.Strategy.IAStrategy;
 import com.ai.ollama.OllamaClient.Template.PromptConfig;
@@ -13,7 +11,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner =
+                new Scanner(System.in);
 
         GeneradorPrompt generador =
                 new GeneradorPrompt();
@@ -22,236 +21,195 @@ public class Main {
 
             System.out.println("""
                     
-                    ===== SISTEMA IA MULTIMODELO =====
+                    ===== IA MULTIMODELO =====
                     
-                    1. Usar Llama3
-                    2. Usar Mistral
-                    3. Comparar ambos modelos
-                    4. Salir
+                    1. Llama3
+                    2. Mistral
+                    3. Phi3 Mini
+                    4. Comparar TODOS
+                    5. Salir
                     """);
 
-            System.out.print("Selecciona una opción: ");
+            System.out.print(
+                    "Selecciona opción: "
+            );
 
-            int opcion = scanner.nextInt();
+            int opcion =
+                    scanner.nextInt();
+
             scanner.nextLine();
 
-            if (opcion == 4) {
-                System.out.println("Finalizando sistema...");
+            if (opcion == 5) {
                 break;
             }
 
-            System.out.print("\nEscribe tu pregunta: ");
+            System.out.print(
+                    "\nEscribe tu pregunta: "
+            );
 
-            String entrada = scanner.nextLine();
+            String entrada =
+                    scanner.nextLine();
 
             PromptConfig config =
                     generador.generar(entrada);
 
             switch (opcion) {
 
-                // =====================================
-                // LLAMA3
-                // =====================================
+                case 1 -> ejecutarModelo(
+                        new Llama3Strategy(),
+                        config
+                );
 
-                case 1 -> {
+                case 2 -> ejecutarModelo(
+                        new MistralStrategy(),
+                        config
+                );
 
-                    IAStrategy estrategia =
-                            new Llama3Strategy();
+                case 3 -> ejecutarModelo(
+                        new Phi3Strategy(),
+                        config
+                );
 
-                    AgenteConversacional agente =
-                            new AgenteConversacional(
-                                    estrategia
-                            );
-
-                    long inicio =
-                            System.currentTimeMillis();
-
-                    String respuesta =
-                            agente.preguntar(config);
-
-                    long fin =
-                            System.currentTimeMillis();
-
-                    System.out.println("""
-                            
-                            ===== RESPUESTA LLAMA3 =====
-                            """);
-
-                    System.out.println(respuesta);
-
-                    System.out.println("""
-                            
-                            Tiempo de respuesta:
-                            """ + (fin - inicio) + " ms");
-                }
-
-                // =====================================
-                // MISTRAL
-                // =====================================
-
-                case 2 -> {
-
-                    IAStrategy estrategia =
-                            new MistralStrategy();
-
-                    AgenteConversacional agente =
-                            new AgenteConversacional(
-                                    estrategia
-                            );
-
-                    long inicio =
-                            System.currentTimeMillis();
-
-                    String respuesta =
-                            agente.preguntar(config);
-
-                    long fin =
-                            System.currentTimeMillis();
-
-                    System.out.println("""
-                            
-                            ===== RESPUESTA MISTRAL =====
-                            """);
-
-                    System.out.println(respuesta);
-
-                    System.out.println("""
-                            
-                            Tiempo de respuesta:
-                            """ + (fin - inicio) + " ms");
-                }
-
-                // =====================================
-                // COMPARAR MODELOS
-                // =====================================
-
-                case 3 -> {
-
-                    IAStrategy llama =
-                            new Llama3Strategy();
-
-                    IAStrategy mistral =
-                            new MistralStrategy();
-
-                    AgenteConversacional agenteLlama =
-                            new AgenteConversacional(
-                                    llama
-                            );
-
-                    AgenteConversacional agenteMistral =
-                            new AgenteConversacional(
-                                    mistral
-                            );
-
-                    // ===== LLAMA3 =====
-
-                    long inicioLlama =
-                            System.currentTimeMillis();
-
-                    String respuestaLlama =
-                            agenteLlama.preguntar(config);
-
-                    long finLlama =
-                            System.currentTimeMillis();
-
-                    // ===== MISTRAL =====
-
-                    long inicioMistral =
-                            System.currentTimeMillis();
-
-                    String respuestaMistral =
-                            agenteMistral.preguntar(config);
-
-                    long finMistral =
-                            System.currentTimeMillis();
-
-                    // =====================================
-                    // RESULTADOS
-                    // =====================================
-
-                    System.out.println("""
-                            
-                            ===== RESULTADOS COMPARATIVOS =====
-                            """);
-
-                    System.out.println("""
-                            
-                            --- LLAMA3 ---
-                            """);
-
-                    System.out.println(respuestaLlama);
-
-                    System.out.println("""
-                            
-                            Tiempo:
-                            """ +
-                            (finLlama - inicioLlama)
-                            + " ms");
-
-                    System.out.println("""
-                            
-                            --- MISTRAL ---
-                            """);
-
-                    System.out.println(respuestaMistral);
-
-                    System.out.println("""
-                            
-                            Tiempo:
-                            """ +
-                            (finMistral - inicioMistral)
-                            + " ms");
-
-                    // =====================================
-                    // ANÁLISIS AUTOMÁTICO
-                    // =====================================
-
-                    System.out.println("""
-                            
-                            ===== ANÁLISIS =====
-                            """);
-
-                    if ((finLlama - inicioLlama)
-                            < (finMistral - inicioMistral)) {
-
-                        System.out.println("""
-                                Llama3 respondió más rápido
-                                en este equipo.
-                                """);
-
-                    } else {
-
-                        System.out.println("""
-                                Mistral respondió más rápido
-                                en este equipo.
-                                """);
-                    }
-
-                    if (respuestaLlama.length()
-                            > respuestaMistral.length()) {
-
-                        System.out.println("""
-                                Llama3 generó respuestas
-                                más detalladas.
-                                """);
-
-                    } else {
-
-                        System.out.println("""
-                                Mistral generó respuestas
-                                más compactas.
-                                """);
-                    }
-                }
+                case 4 -> compararModelos(config);
 
                 default ->
-
-                        System.out.println("""
-                                Opción inválida.
-                                """);
+                        System.out.println(
+                                "Opción inválida."
+                        );
             }
         }
 
         scanner.close();
+    }
+
+    // =====================================
+    // EJECUTAR MODELO
+    // =====================================
+
+    public static void ejecutarModelo(
+            IAStrategy estrategia,
+            PromptConfig config
+    ) {
+
+        AgenteConversacional agente =
+                new AgenteConversacional(
+                        estrategia
+                );
+
+        long inicio =
+                System.currentTimeMillis();
+
+        String respuesta =
+                agente.preguntar(config);
+
+        long fin =
+                System.currentTimeMillis();
+
+        System.out.println(
+                "\n===== "
+                        + estrategia.getNombreModelo()
+                        + " ====="
+        );
+
+        System.out.println(respuesta);
+
+        System.out.println(
+                "\nTiempo: "
+                        + (fin - inicio)
+                        + " ms"
+        );
+    }
+
+    // =====================================
+    // COMPARACIÓN
+    // =====================================
+
+    public static void compararModelos(
+            PromptConfig config
+    ) {
+
+        IAStrategy[] modelos = {
+                new Llama3Strategy(),
+                new MistralStrategy(),
+                new Phi3Strategy()
+        };
+
+        long mejorTiempo =
+                Long.MAX_VALUE;
+
+        String modeloMasRapido = "";
+
+        int respuestaMasLarga = 0;
+        String modeloMasDetallado = "";
+
+        for (IAStrategy estrategia : modelos) {
+
+            AgenteConversacional agente =
+                    new AgenteConversacional(
+                            estrategia
+                    );
+
+            long inicio =
+                    System.currentTimeMillis();
+
+            String respuesta =
+                    agente.preguntar(config);
+
+            long fin =
+                    System.currentTimeMillis();
+
+            long tiempo =
+                    fin - inicio;
+
+            System.out.println(
+                    "\n===== "
+                            + estrategia.getNombreModelo()
+                            + " ====="
+            );
+
+            System.out.println(respuesta);
+
+            System.out.println(
+                    "\nTiempo: "
+                            + tiempo + " ms"
+            );
+
+            if (tiempo < mejorTiempo) {
+
+                mejorTiempo = tiempo;
+
+                modeloMasRapido =
+                        estrategia.getNombreModelo();
+            }
+
+            if (respuesta.length()
+                    > respuestaMasLarga) {
+
+                respuestaMasLarga =
+                        respuesta.length();
+
+                modeloMasDetallado =
+                        estrategia.getNombreModelo();
+            }
+        }
+
+        // =====================================
+        // ANÁLISIS
+        // =====================================
+
+        System.out.println("""
+                
+                ===== ANÁLISIS FINAL =====
+                """);
+
+        System.out.println(
+                "Modelo más rápido: "
+                        + modeloMasRapido
+        );
+
+        System.out.println(
+                "Modelo más detallado: "
+                        + modeloMasDetallado
+        );
     }
 }
