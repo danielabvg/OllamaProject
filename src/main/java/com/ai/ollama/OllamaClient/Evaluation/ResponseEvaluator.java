@@ -1,4 +1,18 @@
-// Enterprise evaluation metrics for local LLM benchmarking
+// =====================================
+// EVALUADOR DE RESPUESTAS LLM
+// =====================================
+//
+// Esta clase calcula métricas utilizadas
+// para analizar rendimiento y calidad
+// de modelos de lenguaje.
+//
+// Incluye:
+// - Semantic Precision
+// - Token Analysis
+// - Consistency Score
+// - Hallucination Rate
+// =====================================
+
 package com.ai.ollama.OllamaClient.Evaluation;
 
 import java.util.HashSet;
@@ -8,6 +22,10 @@ public class ResponseEvaluator {
 
     // =====================================
     // SEMANTIC PRECISION
+    // =====================================
+    //
+    // Evalúa qué tan alineada está
+    // la respuesta con conceptos esperados.
     // =====================================
 
     public double calcularSemanticPrecision(
@@ -33,6 +51,10 @@ public class ResponseEvaluator {
     // =====================================
     // TOKEN / LENGTH ANALYSIS
     // =====================================
+    //
+    // Analiza tamaño y cantidad aproximada
+    // de tokens generados.
+    // =====================================
 
     public int calcularLongitud(
             String respuesta
@@ -49,6 +71,10 @@ public class ResponseEvaluator {
 
     // =====================================
     // CONSISTENCY SCORE
+    // =====================================
+    //
+    // Compara dos respuestas para medir
+    // estabilidad entre ejecuciones.
     // =====================================
 
     public double calcularConsistencyScore(
@@ -80,6 +106,9 @@ public class ResponseEvaluator {
         return (double) comunes / total * 100;
     }
 
+    // Convierte texto a Set para evitar
+    // palabras repetidas durante comparación.
+
     private Set<String> convertirASet(
             String texto
     ) {
@@ -94,6 +123,10 @@ public class ResponseEvaluator {
 
     // =====================================
     // HALLUCINATION RATE
+    // =====================================
+    //
+    // Estima posibles inconsistencias
+    // comparando conceptos esperados.
     // =====================================
 
     public double calcularHallucinationRate(

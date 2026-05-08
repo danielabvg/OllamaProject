@@ -1,4 +1,15 @@
-// Concrete strategy implementation for Mistral
+// =====================================
+// ESTRATEGIA CONCRETA MISTRAL
+// =====================================
+//
+// Esta clase implementa la lógica
+// necesaria para utilizar el modelo
+// local Mistral mediante Ollama.
+//
+// Gracias a IAStrategy, el modelo puede
+// intercambiarse dinámicamente.
+// =====================================
+
 package com.ai.ollama.OllamaClient.Context;
 
 import com.ai.ollama.OllamaClient.OllamaClient;
@@ -10,6 +21,8 @@ public class MistralStrategy
         extends BaseStrategy
         implements IAStrategy {
 
+    // Cliente de conexión con Ollama.
+
     private final OllamaClient cliente =
             new OllamaClient();
 
@@ -17,6 +30,10 @@ public class MistralStrategy
     public String generarRespuesta(
             PromptConfig config
     ) {
+
+        // =====================================
+        // CONSTRUCCIÓN DEL PROMPT
+        // =====================================
 
         String prompt =
                 new PromptBuilder()
@@ -27,17 +44,27 @@ public class MistralStrategy
                         .conEntrada(config.getEntrada())
                         .build();
 
+        // =====================================
+        // PETICIÓN AL MODELO MISTRAL
+        // =====================================
+
         String json =
                 cliente.enviarPeticion(
                         "mistral",
                         prompt
                 );
 
+        // Extraemos únicamente
+        // la respuesta útil del JSON.
+
         return extraerRespuesta(json);
     }
 
     @Override
     public String getNombreModelo() {
+
+        // Nombre mostrado en el sistema.
+
         return "Mistral";
     }
 }

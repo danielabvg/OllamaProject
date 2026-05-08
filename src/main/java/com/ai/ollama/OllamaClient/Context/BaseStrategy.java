@@ -1,7 +1,31 @@
-// Reusable abstract strategy for local AI models
+// =====================================
+// ESTRATEGIA BASE REUTILIZABLE
+// =====================================
+//
+// Esta clase abstracta contiene lógica
+// compartida entre los modelos de IA.
+//
+// Su principal función es procesar
+// y limpiar la respuesta JSON enviada
+// por Ollama.
+//
+// Esto evita duplicar código en:
+// - Llama3Strategy
+// - MistralStrategy
+// - Phi3Strategy
+// =====================================
+
 package com.ai.ollama.OllamaClient.Context;
 
 public abstract class BaseStrategy {
+
+    // =====================================
+    // EXTRACCIÓN DE RESPUESTA
+    // =====================================
+    //
+    // Obtiene únicamente el texto generado
+    // por el modelo desde el JSON de Ollama.
+    // =====================================
 
     protected String extraerRespuesta(String json) {
 
@@ -18,6 +42,9 @@ public abstract class BaseStrategy {
                     .replace("\\\"", "\"");
 
         } catch (Exception e) {
+
+            // Si ocurre un error,
+            // devolvemos el JSON completo.
 
             return json;
         }
