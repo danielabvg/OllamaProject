@@ -1,3 +1,4 @@
+// Enterprise evaluation metrics for local LLM benchmarking
 package com.ai.ollama.OllamaClient.Evaluation;
 
 import java.util.HashSet;
