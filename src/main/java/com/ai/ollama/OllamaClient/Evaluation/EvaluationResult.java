@@ -1,3 +1,4 @@
+// Model used to encapsulate evaluation results
 package com.ai.ollama.OllamaClient.Evaluation;
 
 public class EvaluationResult {
