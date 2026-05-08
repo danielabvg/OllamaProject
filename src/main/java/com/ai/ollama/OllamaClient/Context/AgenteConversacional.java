@@ -1,3 +1,4 @@
+// Context class that dynamically uses AI strategies
 package com.ai.ollama.OllamaClient.Context;
 
 import com.ai.ollama.OllamaClient.Strategy.IAStrategy;
