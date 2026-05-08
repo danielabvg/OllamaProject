@@ -1,3 +1,4 @@
+// Builder pattern implementation for structured prompts
 package com.ai.ollama.OllamaClient.Template;
 
 import java.util.ArrayList;
