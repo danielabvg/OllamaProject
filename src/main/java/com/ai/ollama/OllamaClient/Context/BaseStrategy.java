@@ -1,3 +1,4 @@
+// Reusable abstract strategy for local AI models
 package com.ai.ollama.OllamaClient.Context;
 
 public abstract class BaseStrategy {
