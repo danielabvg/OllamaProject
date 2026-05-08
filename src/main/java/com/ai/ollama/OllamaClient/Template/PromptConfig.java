@@ -1,3 +1,4 @@
+// Configuration model for prompt engineering
 package com.ai.ollama.OllamaClient.Template;
 
 public class PromptConfig {
