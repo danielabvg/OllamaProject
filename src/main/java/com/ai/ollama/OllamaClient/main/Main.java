@@ -1,12 +1,61 @@
-// Dynamic multimodel benchmarking and evaluation system
 package com.ai.ollama.OllamaClient.main;
 
-import com.ai.ollama.OllamaClient.Context.*;
+// =====================================
+// IMPORTACIÓN DE CONTEXTO Y ESTRATEGIAS
+// =====================================
+
+import com.ai.ollama.OllamaClient.Context.AgenteConversacional;
+import com.ai.ollama.OllamaClient.Context.Llama3Strategy;
+import com.ai.ollama.OllamaClient.Context.MistralStrategy;
+import com.ai.ollama.OllamaClient.Context.Phi3Strategy;
+
+// =====================================
+// IMPORTACIÓN DE MÉTRICAS
+// =====================================
+
+import com.ai.ollama.OllamaClient.Evaluation.HallucinationDetector;
 import com.ai.ollama.OllamaClient.Evaluation.ResponseEvaluator;
+
+// =====================================
+// IMPORTACIÓN DE PROMPT ENGINEERING
+// =====================================
+
+import com.ai.ollama.OllamaClient.PromptingEngine.Impl.ChainOfThoughtPromptStrategy;
+import com.ai.ollama.OllamaClient.PromptingEngine.Impl.FewShotPromptStrategy;
+import com.ai.ollama.OllamaClient.PromptingEngine.Impl.GeneradorPrompt;
+import com.ai.ollama.OllamaClient.PromptingEngine.Impl.PromptStrategy;
+import com.ai.ollama.OllamaClient.PromptingEngine.Impl.ZeroShotPromptStrategy;
+
+// =====================================
+// IMPORTACIÓN DE ABSTRACCIONES
+// =====================================
+
 import com.ai.ollama.OllamaClient.Strategy.IAStrategy;
+
+// =====================================
+// IMPORTACIÓN DE TEMPLATES
+// =====================================
+
+import com.ai.ollama.OllamaClient.Template.PromptBuilder;
 import com.ai.ollama.OllamaClient.Template.PromptConfig;
 
+// =====================================
+// LIBRERÍAS
+// =====================================
+
 import java.util.Scanner;
+
+// =====================================
+// MAIN PRINCIPAL
+// =====================================
+//
+// Sistema multimodelo con:
+// - Strategy Pattern
+// - Prompt Engineering
+// - Benchmarking
+// - Evaluation Metrics
+// - Intent Routing
+// =====================================
 
 public class Main {
 
@@ -16,67 +65,265 @@ public class Main {
 
         while (true) {
 
+            // =====================================
+            // MENÚ PRINCIPAL
+            // =====================================
+
             System.out.println("""
-                    
-                    ===== IA MULTIMODELO =====
-                    
-                    1. Llama3
-                    2. Mistral
-                    3. Phi3 Mini
-                    4. Comparar TODOS
+
+                    ====================================
+                    IA MULTIMODELO CON OLLAMA
+                    ====================================
+
+                    1. Usar Llama3
+                    2. Usar Mistral
+                    3. Usar Phi3 Mini
+                    4. Comparar TODOS los modelos
                     5. Salir
+
+                    ====================================
                     """);
 
-            System.out.print("Selecciona una opción: ");
+            System.out.print(
+                    "Selecciona una opción: "
+            );
 
             int opcion = scanner.nextInt();
+
             scanner.nextLine();
 
+            // =====================================
+            // SALIR
+            // =====================================
+
             if (opcion == 5) {
+
+                System.out.println("""
+                        
+                        Cerrando sistema...
+                        """);
+
                 break;
             }
 
-            System.out.print("\nEscribe tu pregunta: ");
+            // =====================================
+            // INPUT USUARIO
+            // =====================================
+
+            System.out.print("""
+
+                    Escribe tu pregunta:
+                    """);
 
             String pregunta = scanner.nextLine();
 
-            PromptConfig config = new PromptConfig(
-                    "Arquitecto de Software Senior",
-                    "Responde de forma clara, técnica y educativa",
-                    pregunta
+            // =====================================
+            // PROMPT STRATEGY ADVISOR
+            // =====================================
+
+            System.out.println("""
+
+                    ====================================
+                    PROMPT STRATEGY ADVISOR
+                    ====================================
+
+                    Zero-Shot
+                    ✔ Más rápido
+                    ✔ Menor consumo
+                    ✔ Preguntas simples
+
+                    Few-Shot
+                    ✔ Más precisión
+                    ✔ Mejor aprendizaje contextual
+                    ✔ Explicaciones educativas
+
+                    Chain-of-Thought
+                    ✔ Mejor lógica
+                    ✔ Ideal para programación
+                    ✔ Excelente en matemáticas
+
+                    ====================================
+                    """);
+
+            // =====================================
+            // MENÚ PROMPT STRATEGY
+            // =====================================
+
+            System.out.println("""
+
+                    ====================================
+                    PROMPT STRATEGY
+                    ====================================
+
+                    1. Zero-Shot
+                    2. Few-Shot
+                    3. Chain-of-Thought
+                    4. Comparar TODAS las Prompt Strategies
+
+                    ====================================
+                    """);
+
+            System.out.print(
+                    "Selecciona Prompt Strategy: "
             );
 
-            switch (opcion) {
+            int opcionPrompt = scanner.nextInt();
 
-                case 1 ->
-                        ejecutarModelo(
-                                new Llama3Strategy(),
-                                config
-                        );
+            scanner.nextLine();
 
-                case 2 ->
-                        ejecutarModelo(
-                                new MistralStrategy(),
-                                config
-                        );
+            // =====================================
+            // GENERADOR DE PROMPTS
+            // =====================================
 
-                case 3 ->
-                        ejecutarModelo(
-                                new Phi3Strategy(),
-                                config
-                        );
+            GeneradorPrompt generador =
+                    new GeneradorPrompt();
 
-                case 4 ->
-                        compararModelos(config);
+            PromptConfig config =
+                    generador.generar(pregunta);
 
-                default ->
-                        System.out.println(
-                                "Opción inválida."
-                        );
+            // =====================================
+            // COMPARACIÓN DE TODAS LAS STRATEGIES
+            // =====================================
+
+            if (opcionPrompt == 4) {
+
+                compararPromptStrategies(
+                        opcion,
+                        config
+                );
+
+                continue;
             }
+
+            // =====================================
+            // SELECCIÓN DE PROMPT STRATEGY
+            // =====================================
+
+            PromptStrategy promptStrategy;
+
+            switch (opcionPrompt) {
+
+                case 1 -> promptStrategy =
+                        new ZeroShotPromptStrategy();
+
+                case 2 -> promptStrategy =
+                        new FewShotPromptStrategy();
+
+                case 3 -> promptStrategy =
+                        new ChainOfThoughtPromptStrategy();
+
+                default -> {
+
+                    System.out.println(
+                            "Prompt Strategy inválida"
+                    );
+
+                    continue;
+                }
+            }
+
+            // =====================================
+            // EJECUCIÓN NORMAL
+            // =====================================
+
+            ejecutarSistema(
+                    opcion,
+                    config,
+                    promptStrategy
+            );
         }
 
         scanner.close();
+    }
+
+    // =====================================
+    // EJECUCIÓN DEL SISTEMA
+    // =====================================
+
+    public static void ejecutarSistema(
+
+            int opcion,
+
+            PromptConfig config,
+
+            PromptStrategy promptStrategy
+    ) {
+
+        // =====================================
+        // PROMPT BUILDER
+        // =====================================
+
+        PromptBuilder builder =
+                new PromptBuilder()
+
+                        .conRol(
+                                config.getRol()
+                        )
+
+                        .conInstrucciones(
+                                config.getInstrucciones()
+                        )
+
+                        .conEntrada(
+                                config.getEntrada()
+                        );
+
+        // =====================================
+        // GENERACIÓN DEL PROMPT
+        // =====================================
+
+        String promptFinal =
+                promptStrategy
+                        .definirEstructuraPrompt(
+                                builder
+                        );
+
+        // =====================================
+        // VISUALIZACIÓN DEL PROMPT
+        // =====================================
+
+        System.out.println("""
+
+                ====================================
+                PROMPT GENERADO
+                ====================================
+                """);
+
+        System.out.println(promptFinal);
+
+        // =====================================
+        // SWITCH PRINCIPAL
+        // =====================================
+
+        switch (opcion) {
+
+            case 1 -> ejecutarModelo(
+                    new Llama3Strategy(),
+                    config,
+                    promptStrategy
+            );
+
+            case 2 -> ejecutarModelo(
+                    new MistralStrategy(),
+                    config,
+                    promptStrategy
+            );
+
+            case 3 -> ejecutarModelo(
+                    new Phi3Strategy(),
+                    config,
+                    promptStrategy
+            );
+
+            case 4 -> compararModelos(
+                    config,
+                    promptStrategy
+            );
+
+            default -> System.out.println(
+                    "Opción inválida."
+            );
+        }
     }
 
     // =====================================
@@ -84,8 +331,12 @@ public class Main {
     // =====================================
 
     public static void ejecutarModelo(
+
             IAStrategy estrategia,
-            PromptConfig config
+
+            PromptConfig config,
+
+            PromptStrategy promptStrategy
     ) {
 
         AgenteConversacional agente =
@@ -96,22 +347,11 @@ public class Main {
         ResponseEvaluator evaluator =
                 new ResponseEvaluator();
 
-        // =====================================
-        // KEYWORDS ESPERADAS
-        // =====================================
-
-        String[] keywords = {
-                "java",
-                "patrón",
-                "encapsulamiento",
-                "clase",
-                "objeto",
-                "software",
-                "arquitectura"
-        };
+        HallucinationDetector detector =
+                new HallucinationDetector();
 
         // =====================================
-        // TIEMPO
+        // MEDICIÓN DE TIEMPO
         // =====================================
 
         long inicio =
@@ -127,6 +367,19 @@ public class Main {
                 fin - inicio;
 
         // =====================================
+        // KEYWORDS
+        // =====================================
+
+        String[] keywords = {
+
+                "java",
+                "software",
+                "arquitectura",
+                "clase",
+                "objeto"
+        };
+
+        // =====================================
         // MÉTRICAS
         // =====================================
 
@@ -136,25 +389,16 @@ public class Main {
                         keywords
                 );
 
-        int longitud =
-                evaluator.calcularLongitud(
-                        respuesta
-                );
-
         int tokens =
                 evaluator.calcularTokens(
                         respuesta
                 );
 
         double hallucination =
-                evaluator.calcularHallucinationRate(
+                detector.detectarHallucinationRate(
                         respuesta,
                         keywords
                 );
-
-        // =====================================
-        // CONSISTENCY
-        // =====================================
 
         String segundaRespuesta =
                 agente.preguntar(config);
@@ -166,49 +410,36 @@ public class Main {
                 );
 
         // =====================================
-        // OUTPUT
+        // RESULTADOS
         // =====================================
 
         System.out.println("""
-                
+
+                ====================================
+                RESULTADO DEL MODELO
                 ====================================
                 """);
 
         System.out.println(
-                "MODELO: "
+                "Modelo: "
                         + estrategia.getNombreModelo()
         );
 
-        System.out.println("""
-                
-                ====================================
-                """);
-
-        System.out.println(respuesta);
-
-        System.out.println("""
-                
-                ===== MÉTRICAS =====
-                """);
-
         System.out.println(
-                "Semantic Precision: "
-                        + precision + "%"
+                "Prompt Strategy: "
+                        + promptStrategy
+                        .getClass()
+                        .getSimpleName()
         );
 
         System.out.println(
-                "Latency Score: "
+                "Latency: "
                         + latency + " ms"
         );
 
         System.out.println(
-                "Response Length: "
-                        + longitud
-        );
-
-        System.out.println(
-                "Token Count: "
-                        + tokens
+                "Semantic Precision: "
+                        + precision + "%"
         );
 
         System.out.println(
@@ -220,237 +451,79 @@ public class Main {
                 "Hallucination Rate: "
                         + hallucination + "%"
         );
+
+        System.out.println(
+                "Token Count: "
+                        + tokens
+        );
+
+        System.out.println("""
+
+                ====================================
+                RESPUESTA
+                ====================================
+                """);
+
+        System.out.println(respuesta);
     }
 
     // =====================================
-    // COMPARACIÓN TOTAL
+    // COMPARACIÓN MULTIMODELO
     // =====================================
 
     public static void compararModelos(
-            PromptConfig config
+
+            PromptConfig config,
+
+            PromptStrategy promptStrategy
     ) {
 
         IAStrategy[] modelos = {
 
                 new Llama3Strategy(),
+
                 new MistralStrategy(),
+
                 new Phi3Strategy()
         };
 
-        double mejorPrecision = 0;
-        String modeloMasPreciso = "";
+        for (IAStrategy modelo : modelos) {
 
-        long mejorTiempo =
-                Long.MAX_VALUE;
-
-        String modeloMasRapido = "";
-
-        int mejorLongitud = 0;
-        String modeloMasDetallado = "";
-
-        double mejorConsistency = 0;
-        String modeloMasConsistente = "";
-
-        double menorHallucination =
-                Double.MAX_VALUE;
-
-        String modeloMasConfiable = "";
-
-        for (IAStrategy estrategia : modelos) {
-
-            AgenteConversacional agente =
-                    new AgenteConversacional(
-                            estrategia
-                    );
-
-            ResponseEvaluator evaluator =
-                    new ResponseEvaluator();
-
-            String[] keywords = {
-                    "java",
-                    "patrón",
-                    "encapsulamiento",
-                    "clase",
-                    "objeto",
-                    "software",
-                    "arquitectura"
-            };
-
-            long inicio =
-                    System.currentTimeMillis();
-
-            String respuesta =
-                    agente.preguntar(config);
-
-            long fin =
-                    System.currentTimeMillis();
-
-            long latency =
-                    fin - inicio;
-
-            double precision =
-                    evaluator.calcularSemanticPrecision(
-                            respuesta,
-                            keywords
-                    );
-
-            int longitud =
-                    evaluator.calcularLongitud(
-                            respuesta
-                    );
-
-            double hallucination =
-                    evaluator.calcularHallucinationRate(
-                            respuesta,
-                            keywords
-                    );
-
-            String respuesta2 =
-                    agente.preguntar(config);
-
-            double consistency =
-                    evaluator.calcularConsistencyScore(
-                            respuesta,
-                            respuesta2
-                    );
-
-            // =====================================
-            // MOSTRAR RESULTADOS
-            // =====================================
-
-            System.out.println("""
-                    
-                    ====================================
-                    """);
-
-            System.out.println(
-                    "MODELO: "
-                            + estrategia.getNombreModelo()
+            ejecutarModelo(
+                    modelo,
+                    config,
+                    promptStrategy
             );
-
-            System.out.println("""
-                    
-                    ====================================
-                    """);
-
-            System.out.println(respuesta);
-
-            System.out.println("""
-                    
-                    ===== MÉTRICAS =====
-                    """);
-
-            System.out.println(
-                    "Semantic Precision: "
-                            + precision + "%"
-            );
-
-            System.out.println(
-                    "Latency Score: "
-                            + latency + " ms"
-            );
-
-            System.out.println(
-                    "Response Length: "
-                            + longitud
-            );
-
-            System.out.println(
-                    "Consistency Score: "
-                            + consistency + "%"
-            );
-
-            System.out.println(
-                    "Hallucination Rate: "
-                            + hallucination + "%"
-            );
-
-            // =====================================
-            // COMPARATIVAS
-            // =====================================
-
-            if (precision > mejorPrecision) {
-
-                mejorPrecision =
-                        precision;
-
-                modeloMasPreciso =
-                        estrategia.getNombreModelo();
-            }
-
-            if (latency < mejorTiempo) {
-
-                mejorTiempo =
-                        latency;
-
-                modeloMasRapido =
-                        estrategia.getNombreModelo();
-            }
-
-            if (longitud > mejorLongitud) {
-
-                mejorLongitud =
-                        longitud;
-
-                modeloMasDetallado =
-                        estrategia.getNombreModelo();
-            }
-
-            if (consistency > mejorConsistency) {
-
-                mejorConsistency =
-                        consistency;
-
-                modeloMasConsistente =
-                        estrategia.getNombreModelo();
-            }
-
-            if (hallucination
-                    < menorHallucination) {
-
-                menorHallucination =
-                        hallucination;
-
-                modeloMasConfiable =
-                        estrategia.getNombreModelo();
-            }
         }
+    }
 
-        // =====================================
-        // ANÁLISIS FINAL
-        // =====================================
+    // =====================================
+    // COMPARACIÓN DE PROMPT STRATEGIES
+    // =====================================
 
-        System.out.println("""
-                
-                
-                ====================================
-                ANÁLISIS FINAL
-                ====================================
-                """);
+    public static void compararPromptStrategies(
 
-        System.out.println(
-                "Modelo más preciso: "
-                        + modeloMasPreciso
-        );
+            int opcionModelo,
 
-        System.out.println(
-                "Modelo más rápido: "
-                        + modeloMasRapido
-        );
+            PromptConfig config
+    ) {
 
-        System.out.println(
-                "Modelo más detallado: "
-                        + modeloMasDetallado
-        );
+        PromptStrategy[] strategies = {
 
-        System.out.println(
-                "Modelo más consistente: "
-                        + modeloMasConsistente
-        );
+                new ZeroShotPromptStrategy(),
 
-        System.out.println(
-                "Modelo más confiable: "
-                        + modeloMasConfiable
-        );
+                new FewShotPromptStrategy(),
+
+                new ChainOfThoughtPromptStrategy()
+        };
+
+        for (PromptStrategy strategy : strategies) {
+
+            ejecutarSistema(
+                    opcionModelo,
+                    config,
+                    strategy
+            );
+        }
     }
 }
