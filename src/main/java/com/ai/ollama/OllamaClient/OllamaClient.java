@@ -1,3 +1,4 @@
+// HTTP integration client for local Ollama API
 package com.ai.ollama.OllamaClient;
 
 import java.net.URI;
