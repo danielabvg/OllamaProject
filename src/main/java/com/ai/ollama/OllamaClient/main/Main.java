@@ -20,11 +20,9 @@ import com.ai.ollama.OllamaClient.Evaluation.ResponseEvaluator;
 // IMPORTACIÓN DE PROMPT ENGINEERING
 // =====================================
 
-import com.ai.ollama.OllamaClient.PromptingEngine.Impl.ChainOfThoughtPromptStrategy;
-import com.ai.ollama.OllamaClient.PromptingEngine.Impl.FewShotPromptStrategy;
 import com.ai.ollama.OllamaClient.PromptingEngine.Impl.GeneradorPrompt;
 import com.ai.ollama.OllamaClient.PromptingEngine.Impl.PromptStrategy;
-import com.ai.ollama.OllamaClient.PromptingEngine.Impl.ZeroShotPromptStrategy;
+import com.ai.ollama.OllamaClient.PromptingEngine.Impl.PromptStrategyRouter;
 
 // =====================================
 // IMPORTACIÓN DE ABSTRACCIONES
@@ -118,60 +116,6 @@ public class Main {
             String pregunta = scanner.nextLine();
 
             // =====================================
-            // PROMPT STRATEGY ADVISOR
-            // =====================================
-
-            System.out.println("""
-
-                    ====================================
-                    PROMPT STRATEGY ADVISOR
-                    ====================================
-
-                    Zero-Shot
-                    ✔ Más rápido
-                    ✔ Menor consumo
-                    ✔ Preguntas simples
-
-                    Few-Shot
-                    ✔ Más precisión
-                    ✔ Mejor aprendizaje contextual
-                    ✔ Explicaciones educativas
-
-                    Chain-of-Thought
-                    ✔ Mejor lógica
-                    ✔ Ideal para programación
-                    ✔ Excelente en matemáticas
-
-                    ====================================
-                    """);
-
-            // =====================================
-            // MENÚ PROMPT STRATEGY
-            // =====================================
-
-            System.out.println("""
-
-                    ====================================
-                    PROMPT STRATEGY
-                    ====================================
-
-                    1. Zero-Shot
-                    2. Few-Shot
-                    3. Chain-of-Thought
-                    4. Comparar TODAS las Prompt Strategies
-
-                    ====================================
-                    """);
-
-            System.out.print(
-                    "Selecciona Prompt Strategy: "
-            );
-
-            int opcionPrompt = scanner.nextInt();
-
-            scanner.nextLine();
-
-            // =====================================
             // GENERADOR DE PROMPTS
             // =====================================
 
@@ -182,45 +126,43 @@ public class Main {
                     generador.generar(pregunta);
 
             // =====================================
-            // COMPARACIÓN DE TODAS LAS STRATEGIES
+            // ROUTER AUTOMÁTICO DE PROMPT STRATEGY
+            // =====================================
+            //
+            // El sistema detecta automáticamente
+            // qué técnica de Prompt Engineering
+            // conviene utilizar según la intención
+            // de la pregunta del usuario.
+            //
+            // Esto transforma el sistema en una
+            // arquitectura de razonamiento dinámico.
+            //
             // =====================================
 
-            if (opcionPrompt == 4) {
+            PromptStrategyRouter router =
+                    new PromptStrategyRouter();
 
-                compararPromptStrategies(
-                        opcion,
-                        config
-                );
-
-                continue;
-            }
-
-            // =====================================
-            // SELECCIÓN DE PROMPT STRATEGY
-            // =====================================
-
-            PromptStrategy promptStrategy;
-
-            switch (opcionPrompt) {
-
-                case 1 -> promptStrategy =
-                        new ZeroShotPromptStrategy();
-
-                case 2 -> promptStrategy =
-                        new FewShotPromptStrategy();
-
-                case 3 -> promptStrategy =
-                        new ChainOfThoughtPromptStrategy();
-
-                default -> {
-
-                    System.out.println(
-                            "Prompt Strategy inválida"
+            PromptStrategy promptStrategy =
+                    router.detectarStrategy(
+                            pregunta
                     );
 
-                    continue;
-                }
-            }
+            // =====================================
+            // PROMPT STRATEGY DETECTADA
+            // =====================================
+
+            System.out.println("""
+
+                    ====================================
+                    PROMPT STRATEGY DETECTADA
+                    ====================================
+                    """);
+
+            System.out.println(
+                    promptStrategy
+                            .getClass()
+                            .getSimpleName()
+            );
 
             // =====================================
             // EJECUCIÓN NORMAL
@@ -493,36 +435,6 @@ public class Main {
                     modelo,
                     config,
                     promptStrategy
-            );
-        }
-    }
-
-    // =====================================
-    // COMPARACIÓN DE PROMPT STRATEGIES
-    // =====================================
-
-    public static void compararPromptStrategies(
-
-            int opcionModelo,
-
-            PromptConfig config
-    ) {
-
-        PromptStrategy[] strategies = {
-
-                new ZeroShotPromptStrategy(),
-
-                new FewShotPromptStrategy(),
-
-                new ChainOfThoughtPromptStrategy()
-        };
-
-        for (PromptStrategy strategy : strategies) {
-
-            ejecutarSistema(
-                    opcionModelo,
-                    config,
-                    strategy
             );
         }
     }

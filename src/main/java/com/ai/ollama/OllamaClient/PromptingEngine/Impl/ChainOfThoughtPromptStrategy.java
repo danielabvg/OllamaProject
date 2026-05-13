@@ -49,5 +49,7 @@ public class ChainOfThoughtPromptStrategy
         // Construcción final del prompt.
 
         return builder.build();
+
+
     }
 }
