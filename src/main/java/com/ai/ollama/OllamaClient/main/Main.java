@@ -1,20 +1,21 @@
 package com.ai.ollama.OllamaClient.main;
 
 // =====================================
-// IMPORTACIÓN DE CONTEXTO Y ESTRATEGIAS
+// IMPORTACIÓN DE CONTEXTO
 // =====================================
 
 import com.ai.ollama.OllamaClient.Context.AgenteConversacional;
-import com.ai.ollama.OllamaClient.Context.Llama3Strategy;
-import com.ai.ollama.OllamaClient.Context.MistralStrategy;
-import com.ai.ollama.OllamaClient.Context.Phi3Strategy;
+import com.ai.ollama.OllamaClient.Context.ModeloStrategy;
 
 // =====================================
 // IMPORTACIÓN DE MÉTRICAS
 // =====================================
 
-import com.ai.ollama.OllamaClient.Evaluation.HallucinationDetector;
-import com.ai.ollama.OllamaClient.Evaluation.ResponseEvaluator;
+// =====================================
+// IMPORTACIÓN DE OLLAMA CLIENT
+// =====================================
+
+import com.ai.ollama.OllamaClient.OllamaClient;
 
 // =====================================
 // IMPORTACIÓN DE PROMPT ENGINEERING
@@ -48,11 +49,14 @@ import java.util.Scanner;
 // =====================================
 //
 // Sistema multimodelo con:
+//
 // - Strategy Pattern
 // - Prompt Engineering
 // - Benchmarking
 // - Evaluation Metrics
 // - Intent Routing
+// - Arquitectura desacoplada
+//
 // =====================================
 
 public class Main {
@@ -60,6 +64,24 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+
+        // =====================================
+        // CLIENTE PRINCIPAL DE OLLAMA
+        // =====================================
+        //
+        // Esta clase centraliza toda la
+        // comunicación HTTP con Ollama.
+        //
+        // Gracias a esto:
+        //
+        // - evitamos duplicación
+        // - reducimos acoplamiento
+        // - reutilizamos conexión
+        //
+        // =====================================
+
+        OllamaClient cliente =
+                new OllamaClient();
 
         while (true) {
 
@@ -91,13 +113,13 @@ public class Main {
             scanner.nextLine();
 
             // =====================================
-            // SALIR
+            // SALIR DEL SISTEMA
             // =====================================
 
             if (opcion == 5) {
 
                 System.out.println("""
-                        
+
                         Cerrando sistema...
                         """);
 
@@ -105,7 +127,7 @@ public class Main {
             }
 
             // =====================================
-            // INPUT USUARIO
+            // INPUT DEL USUARIO
             // =====================================
 
             System.out.print("""
@@ -113,29 +135,39 @@ public class Main {
                     Escribe tu pregunta:
                     """);
 
-            String pregunta = scanner.nextLine();
+            String pregunta =
+                    scanner.nextLine();
 
             // =====================================
             // GENERADOR DE PROMPTS
+            // =====================================
+            //
+            // Esta clase detecta:
+            //
+            // - intención
+            // - rol
+            // - instrucciones
+            //
+            // y construye automáticamente
+            // una configuración contextual.
+            //
             // =====================================
 
             GeneradorPrompt generador =
                     new GeneradorPrompt();
 
             PromptConfig config =
-                    generador.generar(pregunta);
+                    generador.generar(
+                            pregunta
+                    );
 
             // =====================================
-            // ROUTER AUTOMÁTICO DE PROMPT STRATEGY
+            // ROUTER AUTOMÁTICO
             // =====================================
             //
             // El sistema detecta automáticamente
             // qué técnica de Prompt Engineering
-            // conviene utilizar según la intención
-            // de la pregunta del usuario.
-            //
-            // Esto transforma el sistema en una
-            // arquitectura de razonamiento dinámico.
+            // conviene utilizar.
             //
             // =====================================
 
@@ -148,7 +180,7 @@ public class Main {
                     );
 
             // =====================================
-            // PROMPT STRATEGY DETECTADA
+            // VISUALIZACIÓN DE STRATEGY
             // =====================================
 
             System.out.println("""
@@ -165,13 +197,14 @@ public class Main {
             );
 
             // =====================================
-            // EJECUCIÓN NORMAL
+            // EJECUCIÓN PRINCIPAL
             // =====================================
 
             ejecutarSistema(
                     opcion,
                     config,
-                    promptStrategy
+                    promptStrategy,
+                    cliente
             );
         }
 
@@ -179,7 +212,7 @@ public class Main {
     }
 
     // =====================================
-    // EJECUCIÓN DEL SISTEMA
+    // EJECUCIÓN PRINCIPAL DEL SISTEMA
     // =====================================
 
     public static void ejecutarSistema(
@@ -188,11 +221,18 @@ public class Main {
 
             PromptConfig config,
 
-            PromptStrategy promptStrategy
+            PromptStrategy promptStrategy,
+
+            OllamaClient cliente
     ) {
 
         // =====================================
         // PROMPT BUILDER
+        // =====================================
+        //
+        // Construcción dinámica y modular
+        // del prompt final.
+        //
         // =====================================
 
         PromptBuilder builder =
@@ -211,7 +251,7 @@ public class Main {
                         );
 
         // =====================================
-        // GENERACIÓN DEL PROMPT
+        // GENERACIÓN FINAL DEL PROMPT
         // =====================================
 
         String promptFinal =
@@ -219,6 +259,14 @@ public class Main {
                         .definirEstructuraPrompt(
                                 builder
                         );
+
+        // =====================================
+        // GUARDAR PROMPT FINAL
+        // =====================================
+
+        config.setPromptFinal(
+                promptFinal
+        );
 
         // =====================================
         // VISUALIZACIÓN DEL PROMPT
@@ -236,30 +284,60 @@ public class Main {
         // =====================================
         // SWITCH PRINCIPAL
         // =====================================
+        //
+        // Gracias a ModeloStrategy:
+        //
+        // - eliminamos duplicación
+        // - reducimos clases innecesarias
+        // - hacemos el sistema escalable
+        //
+        // =====================================
 
         switch (opcion) {
 
             case 1 -> ejecutarModelo(
-                    new Llama3Strategy(),
+
+                    new ModeloStrategy(
+                            "llama3",
+                            "Llama3",
+                            cliente
+                    ),
+
                     config,
+
                     promptStrategy
             );
 
             case 2 -> ejecutarModelo(
-                    new MistralStrategy(),
+
+                    new ModeloStrategy(
+                            "mistral",
+                            "Mistral",
+                            cliente
+                    ),
+
                     config,
+
                     promptStrategy
             );
 
             case 3 -> ejecutarModelo(
-                    new Phi3Strategy(),
+
+                    new ModeloStrategy(
+                            "phi3",
+                            "Phi3 Mini",
+                            cliente
+                    ),
+
                     config,
+
                     promptStrategy
             );
 
             case 4 -> compararModelos(
                     config,
-                    promptStrategy
+                    promptStrategy,
+                    cliente
             );
 
             default -> System.out.println(
@@ -281,10 +359,30 @@ public class Main {
             PromptStrategy promptStrategy
     ) {
 
+        // =====================================
+        // AGENTE CONVERSACIONAL
+        // =====================================
+        //
+        // El agente depende de la
+        // abstracción IAStrategy y NO
+        // de implementaciones concretas.
+        //
+        // Esto aplica:
+        //
+        // - Dependency Inversion
+        // - Polimorfismo
+        // - Bajo acoplamiento
+        //
+        // =====================================
+
         AgenteConversacional agente =
                 new AgenteConversacional(
                         estrategia
                 );
+
+        // =====================================
+        // SISTEMAS DE EVALUACIÓN
+        // =====================================
 
         ResponseEvaluator evaluator =
                 new ResponseEvaluator();
@@ -293,7 +391,7 @@ public class Main {
                 new HallucinationDetector();
 
         // =====================================
-        // MEDICIÓN DE TIEMPO
+        // MEDICIÓN DE LATENCIA
         // =====================================
 
         long inicio =
@@ -309,7 +407,7 @@ public class Main {
                 fin - inicio;
 
         // =====================================
-        // KEYWORDS
+        // PALABRAS CLAVE
         // =====================================
 
         String[] keywords = {
@@ -322,7 +420,7 @@ public class Main {
         };
 
         // =====================================
-        // MÉTRICAS
+        // MÉTRICAS DE EVALUACIÓN
         // =====================================
 
         double precision =
@@ -341,6 +439,16 @@ public class Main {
                         respuesta,
                         keywords
                 );
+
+        // =====================================
+        // CONSISTENCY SCORE
+        // =====================================
+        //
+        // Se vuelve a ejecutar el prompt
+        // para comparar estabilidad
+        // entre respuestas.
+        //
+        // =====================================
 
         String segundaRespuesta =
                 agente.preguntar(config);
@@ -417,17 +525,44 @@ public class Main {
 
             PromptConfig config,
 
-            PromptStrategy promptStrategy
+            PromptStrategy promptStrategy,
+
+            OllamaClient cliente
     ) {
+
+        // =====================================
+        // ARREGLO POLIMÓRFICO
+        // =====================================
+        //
+        // Todas las estrategias comparten
+        // la misma abstracción IAStrategy.
+        //
+        // =====================================
 
         IAStrategy[] modelos = {
 
-                new Llama3Strategy(),
+                new ModeloStrategy(
+                        "llama3",
+                        "Llama3",
+                        cliente
+                ),
 
-                new MistralStrategy(),
+                new ModeloStrategy(
+                        "mistral",
+                        "Mistral",
+                        cliente
+                ),
 
-                new Phi3Strategy()
+                new ModeloStrategy(
+                        "phi3",
+                        "Phi3 Mini",
+                        cliente
+                )
         };
+
+        // =====================================
+        // BENCHMARK MULTIMODELO
+        // =====================================
 
         for (IAStrategy modelo : modelos) {
 

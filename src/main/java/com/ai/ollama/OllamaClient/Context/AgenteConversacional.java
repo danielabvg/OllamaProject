@@ -27,9 +27,9 @@ public class AgenteConversacional {
 
     // Estrategia/modelo activo.
     // Puede ser:
-    // - Llama3Strategy
-    // - MistralStrategy
-    // - Phi3Strategy
+    // - ModeloStrategy(llama3)
+    // - ModeloStrategy(mistral)
+    // - ModeloStrategy(phi3)
 
     private IAStrategy estrategia;
 

@@ -1,81 +1,88 @@
 // =====================================
-// MODELO DE RESULTADOS DE EVALUACIÓN
+// RESULTADO GLOBAL DE EVALUACIÓN
 // =====================================
 //
-// Esta clase encapsula las métricas
-// generadas durante el benchmarking
-// de modelos de IA.
+// Encapsula:
 //
-// Permite almacenar:
-// - precisión
-// - latencia
-// - longitud de respuesta
-// - consistencia
-// - hallucination rate
+// - semantic similarity
+// - consistency
+// - hallucination risk
+// - latency
+// - score final
+//
 // =====================================
 
 package com.ai.ollama.OllamaClient.Evaluation;
 
 public class EvaluationResult {
 
-    // =====================================
-    // MÉTRICAS PRINCIPALES
-    // =====================================
+    private double semanticSimilarity;
 
-    private double semanticPrecision;
-    private long latency;
-    private int responseLength;
     private double consistencyScore;
-    private double hallucinationRate;
 
-    // =====================================
-    // CONSTRUCTOR
-    // =====================================
-    //
-    // Inicializa todas las métricas
-    // calculadas para un modelo.
-    // =====================================
+    private double hallucinationRisk;
+
+    private double latencyScore;
+
+    private double finalScore;
+
+    private String quality;
 
     public EvaluationResult(
-            double semanticPrecision,
-            long latency,
-            int responseLength,
+
+            double semanticSimilarity,
+
             double consistencyScore,
-            double hallucinationRate
+
+            double hallucinationRisk,
+
+            double latencyScore,
+
+            double finalScore,
+
+            String quality
     ) {
 
-        this.semanticPrecision = semanticPrecision;
-        this.latency = latency;
-        this.responseLength = responseLength;
-        this.consistencyScore = consistencyScore;
-        this.hallucinationRate = hallucinationRate;
+        this.semanticSimilarity =
+                semanticSimilarity;
+
+        this.consistencyScore =
+                consistencyScore;
+
+        this.hallucinationRisk =
+                hallucinationRisk;
+
+        this.latencyScore =
+                latencyScore;
+
+        this.finalScore =
+                finalScore;
+
+        this.quality =
+                quality;
     }
 
-    // =====================================
-    // GETTERS
-    // =====================================
-    //
-    // Permiten acceder a las métricas
-    // de forma controlada.
-    // =====================================
-
-    public double getSemanticPrecision() {
-        return semanticPrecision;
-    }
-
-    public long getLatency() {
-        return latency;
-    }
-
-    public int getResponseLength() {
-        return responseLength;
+    public double getSemanticSimilarity() {
+        return semanticSimilarity;
     }
 
     public double getConsistencyScore() {
         return consistencyScore;
     }
 
-    public double getHallucinationRate() {
-        return hallucinationRate;
+    public double getHallucinationRisk() {
+        return hallucinationRisk;
+    }
+
+    public double getLatencyScore() {
+        return latencyScore;
+    }
+
+    public double getFinalScore() {
+        return finalScore;
+    }
+
+    public String getQuality() {
+        return quality;
     }
 }

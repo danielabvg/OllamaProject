@@ -9,8 +9,16 @@
 // - rol/persona
 // - instrucciones
 // - entrada del usuario
+// - prompt final generado
 //
-// Esto mejora organización y reutilización.
+// Esto mejora:
+//
+// - organización
+// - reutilización
+// - encapsulamiento
+// - debugging
+// - benchmarking
+//
 // =====================================
 
 package com.ai.ollama.OllamaClient.Template;
@@ -22,8 +30,25 @@ public class PromptConfig {
     // =====================================
 
     private String rol;
+
     private String instrucciones;
+
     private String entrada;
+
+    // =====================================
+    // PROMPT FINAL
+    // =====================================
+    //
+    // Guarda el prompt completo
+    // después de aplicar:
+    //
+    // - Prompt Engineering
+    // - Prompt Strategies
+    // - Builder Pattern
+    //
+    // =====================================
+
+    private String promptFinal;
 
     // =====================================
     // CONSTRUCTOR
@@ -34,13 +59,18 @@ public class PromptConfig {
     // =====================================
 
     public PromptConfig(
+
             String rol,
+
             String instrucciones,
+
             String entrada
     ) {
 
         this.rol = rol;
+
         this.instrucciones = instrucciones;
+
         this.entrada = entrada;
     }
 
@@ -53,14 +83,50 @@ public class PromptConfig {
     // =====================================
 
     public String getRol() {
+
         return rol;
     }
 
     public String getInstrucciones() {
+
         return instrucciones;
     }
 
     public String getEntrada() {
+
         return entrada;
+    }
+
+    // =====================================
+    // GET PROMPT FINAL
+    // =====================================
+
+    public String getPromptFinal() {
+
+        return promptFinal;
+    }
+
+    // =====================================
+    // SET PROMPT FINAL
+    // =====================================
+    //
+    // Guarda el prompt final ya construido.
+    //
+    // Esto permite:
+    //
+    // - reutilización
+    // - evaluación
+    // - benchmarking
+    // - logging
+    // - debugging
+    //
+    // =====================================
+
+    public void setPromptFinal(
+
+            String promptFinal
+    ) {
+
+        this.promptFinal = promptFinal;
     }
 }
