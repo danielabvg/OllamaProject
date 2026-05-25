@@ -1,74 +1,102 @@
-# Ollama Multimodel AI Framework
+# Ollama Multimodel AI Orchestration Framework
 
 ## Overview
 
-This project implements a modular and scalable **AI orchestration framework** using **Java 17** and **Ollama** for running, evaluating, and benchmarking **Large Language Models (LLMs)** locally.
+This project implements a modular and scalable **AI orchestration framework** using **Java 17** and **Ollama** for running, evaluating, benchmarking, and dynamically orchestrating **Large Language Models (LLMs)** locally.
 
-The system was designed using advanced **Object-Oriented Programming principles**, modern AI software architecture practices, and dynamic Prompt Engineering techniques.
+The framework was designed following advanced **Object-Oriented Programming principles**, modern AI software engineering practices, and modular conversational architecture patterns inspired by contemporary LLM systems.
 
-Instead of being limited to a single static model, the framework dynamically manages:
+Unlike traditional chatbot implementations tightly coupled to a single provider or model, this framework introduces a fully extensible and reusable architecture capable of:
 
-- Multiple LLMs
-- Prompt Engineering strategies
-- Intelligent prompt routing
-- Automated evaluation systems
-- Benchmarking workflows
-- Adaptive reasoning behaviors
+- Dynamic LLM orchestration
+- Adaptive Prompt Engineering
+- Automatic reasoning selection
+- Modular benchmarking pipelines
+- Context-aware prompt generation
+- Experimental conversational evaluation
+- Plug-and-play AI integrations
 
-through a fully extensible **plug-and-play architecture**.
+The system transforms conversational AI into a modular research-oriented architecture focused on maintainability, scalability, extensibility, and reproducibility.
 
 ---
 
 # Core Features
 
-## Dynamic Multimodel System
+## Dynamic Multimodel Architecture
 
-The framework supports dynamic execution and comparison of multiple LLMs.
+The framework supports dynamic execution and orchestration of multiple LLMs using a reusable parameterized strategy abstraction.
 
-### Current Models
+### Current Integrated Models
 
 - Llama3
 - Mistral
 - Phi3 Mini
 
-The architecture was intentionally designed to support **virtually any Ollama-compatible model** with minimal effort.
+The architecture was intentionally designed to support virtually any Ollama-compatible model with minimal integration effort.
 
-New models can be integrated without modifying the existing system core thanks to the implementation of:
+New models can be added without modifying the system core thanks to:
 
-- **Strategy Pattern**
-- **SOLID Principles**
-- **Low-coupled architecture**
+- Strategy Pattern
+- SOLID Principles
+- Low-coupled architecture
+- Dependency inversion
+- Reusable model abstractions
 
 ---
 
-# Intelligent Prompt Engineering System
+# Reusable Model Strategy System
 
-The project includes a dedicated **Prompt Engineering layer** capable of dynamically modifying the reasoning behavior of the AI during runtime.
+One of the major architectural improvements introduced in the framework is the implementation of a reusable `ModeloStrategy` abstraction.
 
-### Supported Prompt Strategies
+Instead of creating independent classes for each model:
+
+- `Llama3Strategy`
+- `MistralStrategy`
+- `Phi3Strategy`
+
+the system now dynamically instantiates models using a single reusable strategy class.
+
+This significantly improves:
+
+- maintainability
+- scalability
+- architectural cleanliness
+- extensibility
+- reduction of duplicated logic
+
+The framework now treats models as configurable runtime strategies rather than hardcoded implementations.
+
+This design resembles modern enterprise AI orchestration systems.
+
+---
+
+# Intelligent Prompt Engineering Layer
+
+The framework includes a dedicated Prompt Engineering orchestration layer capable of dynamically modifying reasoning behavior during runtime.
+
+## Supported Prompt Strategies
 
 - Zero-Shot Prompting
 - Few-Shot Prompting
 - Chain-of-Thought Prompting
 
-Unlike traditional systems where the user manually selects prompting techniques, this framework implements an automatic **Prompt Strategy Router** capable of detecting which reasoning strategy is most appropriate according to the user request.
+Instead of manually selecting prompting techniques, the framework automatically determines which reasoning strategy should be used according to:
 
-The system automatically analyzes:
 - context
 - complexity
-- reasoning requirements
 - educational intent
-- logical structure
+- logical reasoning requirements
+- semantic structure
 
-to dynamically determine how the AI should think before generating a response.
+This behavior is managed by the `PromptStrategyRouter`.
 
-This transforms the framework into an adaptive AI orchestration system instead of a static chatbot.
+The system therefore behaves as an adaptive reasoning orchestration engine instead of a static conversational interface.
 
 ---
 
-# Intelligent Prompt Construction
+# Context-Aware Prompt Construction
 
-Prompts are dynamically generated using:
+Prompts are dynamically generated using multiple specialized components:
 
 - `PromptBuilder`
 - `PromptConfig`
@@ -78,84 +106,130 @@ Prompts are dynamically generated using:
 
 The framework automatically:
 
-- Detects user intent
-- Assigns contextual AI roles
-- Optimizes instructions
-- Selects reasoning strategies dynamically
-- Structures prompts adaptively
+- detects user intent
+- assigns contextual AI roles
+- optimizes instructions
+- selects reasoning strategies
+- generates adaptive prompts
+- structures contextual conversations
 
-This creates context-aware AI interactions capable of modifying their reasoning flow depending on the user request.
+This creates dynamic conversational pipelines capable of adapting reasoning behavior in real time.
 
 ---
 
-# Evaluation and Benchmarking System
+# Modular Benchmarking Pipeline
 
-The project not only generates responses.
+One of the most advanced components of the framework is its modular benchmarking and conversational evaluation pipeline.
 
-It also evaluates and compares them automatically using multiple metrics inspired by real-world AI benchmarking systems.
+Unlike conventional chatbot projects that only generate responses, this framework performs automated experimental evaluation inspired by modern AI benchmarking systems.
 
-## Implemented Metrics
+The evaluation architecture was redesigned into independent and reusable evaluators.
+
+---
+
+# Evaluation Architecture
+
+The previous monolithic evaluation system was replaced by a modular benchmarking pipeline composed of specialized evaluation components.
+
+## Current Evaluation Modules
+
+| Component | Responsibility |
+|---|---|
+| `SemanticEvaluator` | Measures semantic relevance |
+| `LatencyEvaluator` | Measures response time |
+| `ConsistencyEvaluator` | Measures response stability |
+| `HeuristicHallucinationEstimator` | Estimates hallucination probability |
+| `WeightedScoreCalculator` | Generates composite evaluation score |
+| `ResponseQualityAnalyzer` | Performs response quality analysis |
+| `BenchmarkPipeline` | Orchestrates the full evaluation workflow |
+
+This architecture enables:
+
+- modular evaluation
+- reproducible experimentation
+- extensible benchmarking
+- independent metric evolution
+- AI research workflows
+
+---
+
+# Implemented Metrics
 
 | Metric | Purpose |
 |---|---|
 | Semantic Precision | Measures contextual relevance |
 | Latency Score | Measures response speed |
-| Token Analysis | Measures efficiency and response size |
 | Consistency Score | Measures response stability |
-| Hallucination Rate | Estimates fabricated information |
+| Hallucination Estimation | Estimates fabricated information |
+| Token Analysis | Measures response efficiency |
+| Composite Weighted Score | Aggregates global performance |
 
 ---
 
-## Benchmarking Capabilities
+# Benchmarking Capabilities
 
 The framework supports benchmarking between:
 
-- Multiple AI models
-- Multiple reasoning behaviors
-- Multiple Prompt Engineering techniques
+- multiple LLMs
+- multiple reasoning strategies
+- multiple prompt engineering techniques
+- multiple evaluation configurations
 
-This allows users to analyze:
-- Which model is more accurate
-- Which reasoning strategy performs better
-- Which model responds faster
+This allows users to experimentally analyze:
+
+- Which model performs better
+- Which reasoning strategy improves quality
 - Which configuration minimizes hallucinations
+- Which model responds faster
+- Which prompt technique improves consistency
 
-The framework creates an experimental environment similar to modern AI research and enterprise evaluation systems.
-
----
-
-# Object-Oriented Programming and Architecture
-
-A major focus of the project is the implementation of advanced **Object-Oriented Programming concepts** and scalable software engineering principles.
+The framework therefore behaves as an experimental conversational AI laboratory.
 
 ---
 
-## Design Patterns Applied
+# Object-Oriented Architecture
 
-### Strategy Pattern
+A major focus of the project is the application of advanced software engineering principles to conversational AI systems.
+
+The framework demonstrates how modern AI systems can be built using:
+
+- abstraction
+- encapsulation
+- polymorphism
+- modularity
+- dependency inversion
+- low-coupled architectures
+
+---
+
+# Design Patterns Applied
+
+## Strategy Pattern
 
 Used for:
 
-- Dynamic AI model switching
-- Dynamic Prompt Strategy switching
-- Automatic reasoning routing
+- Dynamic LLM orchestration
+- Prompt Engineering strategies
+- Runtime reasoning selection
+- Adaptive conversational behavior
 
-This allows the system to modify behavior during runtime without changing the application core.
+The system dynamically changes behavior during execution without modifying the application core.
 
 ---
 
-### Builder Pattern
+## Builder Pattern
 
 Used for:
 
-- Modular and dynamic prompt construction
+- Modular prompt construction
+- Structured conversational pipelines
 
-Benefits:
+Benefits include:
 
-- Improved readability
-- Scalability
-- Reusability
-- Maintainability
+- readability
+- scalability
+- reusability
+- maintainability
 
 ---
 
@@ -165,7 +239,14 @@ Benefits:
 
 The system is open for extension but closed for modification.
 
-New models and reasoning strategies can be integrated without modifying the existing architecture.
+New:
+
+- LLMs
+- Prompt Strategies
+- evaluation metrics
+- benchmarking modules
+
+can be added without altering the architecture core.
 
 ---
 
@@ -173,45 +254,17 @@ New models and reasoning strategies can be integrated without modifying the exis
 
 The framework depends on abstractions instead of concrete implementations.
 
+Examples:
+
+- `IAStrategy`
+- `PromptStrategy`
+
 This creates:
 
-- Low coupling
-- Modularity
-- Scalability
-- Easier maintenance
-
----
-
-# What the User Can Do
-
-The framework allows users to:
-
-- Dynamically switch between multiple LLMs
-- Compare AI models automatically
-- Test adaptive AI reasoning systems
-- Benchmark Prompt Engineering strategies
-- Evaluate AI quality automatically
-- Analyze hallucination rates
-- Compare reasoning consistency
-- Visualize generated prompts
-- Experiment with virtually any Ollama-compatible model
-
-The framework demonstrates how AI systems can dynamically decide **how to reason** depending on the complexity and context of a request.
-
----
-
-# Technologies Used
-
-- Java 17
-- Ollama
-- Local LLMs
-- Gson
-- HTTP Client API
-- Prompt Engineering
-- Object-Oriented Programming
-- Strategy Pattern
-- Builder Pattern
-- SOLID Principles
+- low coupling
+- scalability
+- maintainability
+- interchangeable components
 
 ---
 
@@ -221,12 +274,37 @@ The framework demonstrates how AI systems can dynamically decide **how to reason
 src/main/java/com/ai/ollama/OllamaClient/
 
 ├── Context/
-├── Strategy/
-├── PromptingEngine/
-├── Template/
+│   ├── AgenteConversacional
+│   └── ModeloStrategy
+│
 ├── Evaluation/
+│   ├── BenchmarkPipeline
+│   ├── SemanticEvaluator
+│   ├── ConsistencyEvaluator
+│   ├── LatencyEvaluator
+│   ├── HeuristicHallucinationEstimator
+│   ├── WeightedScoreCalculator
+│   ├── ResponseQualityAnalyzer
+│   └── EvaluationResult
+│
 ├── IntentRouting/
+│
+├── PromptingEngine/
+│   ├── PromptStrategy
+│   ├── PromptStrategyRouter
+│   ├── ZeroShotPromptStrategy
+│   ├── FewShotPromptStrategy
+│   └── ChainOfThoughtPromptStrategy
+│
+├── Strategy/
+│   └── IAStrategy
+│
+├── Template/
+│   ├── PromptBuilder
+│   └── PromptConfig
+│
 └── main/
+    └── Main
 ```
 
 ---
@@ -235,14 +313,14 @@ src/main/java/com/ai/ollama/OllamaClient/
 
 1. The user selects an AI model.
 2. The user writes a request.
-3. The system analyzes the request context.
-4. `IntentRouter` determines the contextual AI role.
-5. `PromptStrategyRouter` automatically selects the best reasoning strategy.
-6. `PromptBuilder` dynamically constructs the prompt.
-7. The selected Prompt Strategy modifies the reasoning behavior.
-8. Ollama executes the selected LLM.
-9. The evaluation system analyzes the response.
-10. Benchmarking metrics are displayed.
+3. `IntentRouter` analyzes conversational intent.
+4. `PromptStrategyRouter` selects the reasoning strategy.
+5. `PromptBuilder` dynamically constructs the prompt.
+6. `ModeloStrategy` dynamically instantiates the selected model.
+7. Ollama executes the LLM locally.
+8. `BenchmarkPipeline` evaluates the response.
+9. Specialized evaluators analyze quality metrics.
+10. Composite benchmarking scores are generated.
 
 ---
 
@@ -250,47 +328,85 @@ src/main/java/com/ai/ollama/OllamaClient/
 
 This project goes far beyond a traditional chatbot implementation.
 
-It represents a modular AI orchestration framework capable of:
+The framework introduces concepts commonly found in modern AI orchestration systems and research architectures, including:
 
-- Managing multiple LLMs dynamically
-- Automatically selecting reasoning strategies
-- Applying adaptive Prompt Engineering
-- Generating intelligent prompts dynamically
-- Benchmarking reasoning behaviors
-- Evaluating AI quality automatically
-- Supporting future AI integrations through plug-and-play architecture
+- dynamic model orchestration
+- adaptive reasoning systems
+- modular benchmarking pipelines
+- reusable evaluation modules
+- prompt engineering orchestration
+- experimental conversational analysis
+- plug-and-play AI integrations
 
-The framework combines modern AI concepts with professional software engineering practices to create a scalable foundation for future AI experimentation and enterprise-level systems.
+The architecture combines:
+
+- conversational AI
+- software engineering
+- benchmarking research
+- prompt engineering
+- modular orchestration
+
+into a unified extensible framework.
+
+---
+
+# Technologies Used
+
+- Java 17
+- Ollama
+- Local LLMs
+- HTTP Client API
+- Prompt Engineering
+- Object-Oriented Programming
+- Strategy Pattern
+- Builder Pattern
+- SOLID Principles
+- Conversational Benchmarking
+- Modular AI Evaluation
 
 ---
 
 # Future Improvements
 
-Possible future extensions include:
+Potential future extensions include:
 
-- Gemini/OpenAI integration
+- OpenAI integration
+- Gemini integration
+- Claude integration
 - Retrieval-Augmented Generation (RAG)
-- AI memory systems
+- Vector databases
+- Long-term conversational memory
 - Autonomous AI agents
 - Multi-agent orchestration
-- Advanced semantic evaluation
+- Semantic embeddings
+- Advanced hallucination detection
 - Web dashboards
-- Cloud deployment support
+- Cloud-native deployment
 
 ---
 
 # Conclusion
 
-This framework demonstrates how modern AI systems can be built using scalable software engineering principles combined with dynamic Prompt Engineering, intelligent reasoning orchestration, and automated evaluation systems.
+This framework demonstrates how modern conversational AI systems can be built using scalable software engineering principles combined with adaptive Prompt Engineering and modular benchmarking pipelines.
 
 By integrating:
 
-- Dynamic LLM orchestration
-- Adaptive Prompt Engineering
-- Automatic reasoning selection
-- Benchmarking systems
-- Evaluation metrics
-- Modular architecture
+- dynamic LLM orchestration
+- reusable strategy abstractions
+- adaptive Prompt Engineering
+- modular evaluation systems
+- benchmarking workflows
+- conversational reasoning pipelines
 - Object-Oriented Programming
+- SOLID architecture
 
-the project creates a strong foundation for experimentation, research, and future enterprise-level AI applications.
+the project establishes a strong foundation for:
+
+- AI experimentation
+- conversational research
+- enterprise AI systems
+- scalable orchestration frameworks
+- future intelligent agents
+- reproducible benchmarking environments
+
+The framework represents a research-oriented approach toward maintainable, extensible, and experimentally grounded conversational AI architectures.
