@@ -8,8 +8,11 @@ import com.ai.ollama.OllamaClient.Context.AgenteConversacional;
 import com.ai.ollama.OllamaClient.Context.ModeloStrategy;
 
 // =====================================
-// IMPORTACIÓN DE MÉTRICAS
+// IMPORTACIÓN DE EVALUACIÓN
 // =====================================
+
+import com.ai.ollama.OllamaClient.Evaluation.BenchmarkPipeline;
+import com.ai.ollama.OllamaClient.Evaluation.EvaluationResult;
 
 // =====================================
 // IMPORTACIÓN DE OLLAMA CLIENT
@@ -48,35 +51,40 @@ import java.util.Scanner;
 // MAIN PRINCIPAL
 // =====================================
 //
-// Sistema multimodelo con:
+// Framework conversacional multimodelo
+// basado en:
 //
 // - Strategy Pattern
 // - Prompt Engineering
-// - Benchmarking
-// - Evaluation Metrics
-// - Intent Routing
-// - Arquitectura desacoplada
+// - Benchmarking Modular
+// - Evaluation Pipelines
+// - Arquitectura Desacoplada
 //
 // =====================================
 
 public class Main {
 
+    // =====================================
+    // MAIN
+    // =====================================
+
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner =
+                new Scanner(System.in);
 
         // =====================================
-        // CLIENTE PRINCIPAL DE OLLAMA
+        // CLIENTE CENTRAL DE OLLAMA
         // =====================================
         //
-        // Esta clase centraliza toda la
-        // comunicación HTTP con Ollama.
+        // Esta instancia centraliza toda
+        // la comunicación HTTP.
         //
-        // Gracias a esto:
+        // Beneficios:
         //
-        // - evitamos duplicación
-        // - reducimos acoplamiento
-        // - reutilizamos conexión
+        // - reutilización
+        // - bajo acoplamiento
+        // - modularidad
         //
         // =====================================
 
@@ -92,13 +100,13 @@ public class Main {
             System.out.println("""
 
                     ====================================
-                    IA MULTIMODELO CON OLLAMA
+                    FRAMEWORK MULTIMODELO IA
                     ====================================
 
-                    1. Usar Llama3
-                    2. Usar Mistral
-                    3. Usar Phi3 Mini
-                    4. Comparar TODOS los modelos
+                    1. Ejecutar Llama3
+                    2. Ejecutar Mistral
+                    3. Ejecutar Phi3 Mini
+                    4. Benchmark Multimodelo
                     5. Salir
 
                     ====================================
@@ -108,12 +116,13 @@ public class Main {
                     "Selecciona una opción: "
             );
 
-            int opcion = scanner.nextInt();
+            int opcion =
+                    scanner.nextInt();
 
             scanner.nextLine();
 
             // =====================================
-            // SALIR DEL SISTEMA
+            // SALIR
             // =====================================
 
             if (opcion == 5) {
@@ -127,7 +136,7 @@ public class Main {
             }
 
             // =====================================
-            // INPUT DEL USUARIO
+            // INPUT USUARIO
             // =====================================
 
             System.out.print("""
@@ -142,14 +151,11 @@ public class Main {
             // GENERADOR DE PROMPTS
             // =====================================
             //
-            // Esta clase detecta:
+            // Detecta:
             //
-            // - intención
-            // - rol
+            // - rol contextual
             // - instrucciones
-            //
-            // y construye automáticamente
-            // una configuración contextual.
+            // - intención
             //
             // =====================================
 
@@ -162,12 +168,14 @@ public class Main {
                     );
 
             // =====================================
-            // ROUTER AUTOMÁTICO
+            // ROUTER DE PROMPT STRATEGIES
             // =====================================
             //
-            // El sistema detecta automáticamente
-            // qué técnica de Prompt Engineering
-            // conviene utilizar.
+            // Selecciona automáticamente:
+            //
+            // - Zero-Shot
+            // - Few-Shot
+            // - Chain-of-Thought
             //
             // =====================================
 
@@ -201,9 +209,13 @@ public class Main {
             // =====================================
 
             ejecutarSistema(
+
                     opcion,
+
                     config,
+
                     promptStrategy,
+
                     cliente
             );
         }
@@ -212,7 +224,7 @@ public class Main {
     }
 
     // =====================================
-    // EJECUCIÓN PRINCIPAL DEL SISTEMA
+    // EJECUCIÓN PRINCIPAL
     // =====================================
 
     public static void ejecutarSistema(
@@ -227,12 +239,7 @@ public class Main {
     ) {
 
         // =====================================
-        // PROMPT BUILDER
-        // =====================================
-        //
-        // Construcción dinámica y modular
-        // del prompt final.
-        //
+        // BUILDER DEL PROMPT
         // =====================================
 
         PromptBuilder builder =
@@ -282,14 +289,14 @@ public class Main {
         System.out.println(promptFinal);
 
         // =====================================
-        // SWITCH PRINCIPAL
+        // SELECCIÓN DE MODELO
         // =====================================
         //
-        // Gracias a ModeloStrategy:
+        // ModeloStrategy permite:
         //
-        // - eliminamos duplicación
-        // - reducimos clases innecesarias
-        // - hacemos el sistema escalable
+        // - reutilización
+        // - escalabilidad
+        // - integración dinámica
         //
         // =====================================
 
@@ -335,8 +342,11 @@ public class Main {
             );
 
             case 4 -> compararModelos(
+
                     config,
+
                     promptStrategy,
+
                     cliente
             );
 
@@ -360,18 +370,15 @@ public class Main {
     ) {
 
         // =====================================
-        // AGENTE CONVERSACIONAL
+        // CONTEXTO CONVERSACIONAL
         // =====================================
         //
-        // El agente depende de la
-        // abstracción IAStrategy y NO
-        // de implementaciones concretas.
+        // El contexto depende de la
+        // abstracción IAStrategy.
         //
         // Esto aplica:
         //
-        // - Dependency Inversion
         // - Polimorfismo
-        // - Bajo acoplamiento
         //
         // =====================================
 
@@ -381,21 +388,15 @@ public class Main {
                 );
 
         // =====================================
-        // SISTEMAS DE EVALUACIÓN
-        // =====================================
-
-        ResponseEvaluator evaluator =
-                new ResponseEvaluator();
-
-        HallucinationDetector detector =
-                new HallucinationDetector();
-
-        // =====================================
         // MEDICIÓN DE LATENCIA
         // =====================================
 
         long inicio =
                 System.currentTimeMillis();
+
+        // =====================================
+        // RESPUESTA PRINCIPAL
+        // =====================================
 
         String respuesta =
                 agente.preguntar(config);
@@ -407,56 +408,50 @@ public class Main {
                 fin - inicio;
 
         // =====================================
-        // PALABRAS CLAVE
-        // =====================================
-
-        String[] keywords = {
-
-                "java",
-                "software",
-                "arquitectura",
-                "clase",
-                "objeto"
-        };
-
-        // =====================================
-        // MÉTRICAS DE EVALUACIÓN
-        // =====================================
-
-        double precision =
-                evaluator.calcularSemanticPrecision(
-                        respuesta,
-                        keywords
-                );
-
-        int tokens =
-                evaluator.calcularTokens(
-                        respuesta
-                );
-
-        double hallucination =
-                detector.detectarHallucinationRate(
-                        respuesta,
-                        keywords
-                );
-
-        // =====================================
-        // CONSISTENCY SCORE
+        // SEGUNDA RESPUESTA
         // =====================================
         //
-        // Se vuelve a ejecutar el prompt
-        // para comparar estabilidad
-        // entre respuestas.
+        // Se ejecuta nuevamente el prompt
+        // para medir consistencia.
         //
         // =====================================
 
         String segundaRespuesta =
                 agente.preguntar(config);
 
-        double consistency =
-                evaluator.calcularConsistencyScore(
+        // =====================================
+        // REFERENCIA ESPERADA
+        // =====================================
+        //
+        // Simula respuesta esperada
+        // para evaluación semántica.
+        //
+        // =====================================
+
+        String referencia =
+                """
+                arquitectura modular orientada
+                a objetos utilizando patrones
+                de diseño y principios SOLID
+                """;
+
+        // =====================================
+        // PIPELINE DE BENCHMARKING
+        // =====================================
+
+        BenchmarkPipeline pipeline =
+                new BenchmarkPipeline();
+
+        EvaluationResult resultado =
+                pipeline.ejecutarEvaluacion(
+
                         respuesta,
-                        segundaRespuesta
+
+                        referencia,
+
+                        segundaRespuesta,
+
+                        latency
                 );
 
         // =====================================
@@ -466,7 +461,7 @@ public class Main {
         System.out.println("""
 
                 ====================================
-                RESULTADO DEL MODELO
+                RESULTADOS DEL BENCHMARK
                 ====================================
                 """);
 
@@ -483,42 +478,64 @@ public class Main {
         );
 
         System.out.println(
-                "Latency: "
-                        + latency + " ms"
-        );
-
-        System.out.println(
-                "Semantic Precision: "
-                        + precision + "%"
+                "Semantic Similarity: "
+                        + resultado
+                        .getSemanticSimilarity()
+                        + "%"
         );
 
         System.out.println(
                 "Consistency Score: "
-                        + consistency + "%"
+                        + resultado
+                        .getConsistencyScore()
+                        + "%"
         );
 
         System.out.println(
-                "Hallucination Rate: "
-                        + hallucination + "%"
+                "Hallucination Risk: "
+                        + resultado
+                        .getHallucinationRisk()
+                        + "%"
         );
 
         System.out.println(
-                "Token Count: "
-                        + tokens
+                "Latency Score: "
+                        + resultado
+                        .getLatencyScore()
+                        + "%"
         );
+
+        System.out.println(
+                "Final Composite Score: "
+                        + resultado
+                        .getFinalScore()
+                        + "%"
+        );
+
+        System.out.println(
+                "Quality Analysis: "
+                        + resultado
+                        .getQuality()
+        );
+
+        // =====================================
+        // RESPUESTA FINAL
+        // =====================================
 
         System.out.println("""
 
                 ====================================
-                RESPUESTA
+                RESPUESTA DEL MODELO
                 ====================================
                 """);
 
-        System.out.println(respuesta);
+        System.out.println(
+                respuesta
+        );
     }
 
     // =====================================
-    // COMPARACIÓN MULTIMODELO
+    // BENCHMARK MULTIMODELO
     // =====================================
 
     public static void compararModelos(
@@ -532,11 +549,6 @@ public class Main {
 
         // =====================================
         // ARREGLO POLIMÓRFICO
-        // =====================================
-        //
-        // Todas las estrategias comparten
-        // la misma abstracción IAStrategy.
-        //
         // =====================================
 
         IAStrategy[] modelos = {
@@ -561,14 +573,17 @@ public class Main {
         };
 
         // =====================================
-        // BENCHMARK MULTIMODELO
+        // EJECUCIÓN ITERATIVA
         // =====================================
 
         for (IAStrategy modelo : modelos) {
 
             ejecutarModelo(
+
                     modelo,
+
                     config,
+
                     promptStrategy
             );
         }
