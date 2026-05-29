@@ -16,7 +16,7 @@ import com.ai.ollama.OllamaClient.Template.PromptConfig;
 //
 // - llama3
 // - mistral
-// - phi3
+// - phi3 Mini
 // - gemma
 // - codellama
 //
@@ -26,7 +26,6 @@ import com.ai.ollama.OllamaClient.Template.PromptConfig;
 // ==========================================
 
 public class ModeloStrategy
-        extends BaseStrategy
         implements IAStrategy {
 
     // ==========================================
@@ -34,6 +33,22 @@ public class ModeloStrategy
     // ==========================================
 
     private final OllamaClient cliente;
+
+    // ==========================================
+    // PARSER DE RESPUESTAS
+    // ==========================================
+    //
+    // Desacopla completamente el procesamiento
+    // JSON de la lógica de ejecución.
+    //
+    // Esto mejora:
+    //
+    // - mantenibilidad
+    // - reutilización
+    //
+    // ==========================================
+
+    private final ResponseParser parser;
 
     // ==========================================
     // NOMBRE INTERNO DEL MODELO
@@ -65,6 +80,9 @@ public class ModeloStrategy
         this.nombreVisual = nombreVisual;
 
         this.cliente = cliente;
+
+        this.parser =
+                new ResponseParser();
     }
 
     // ==========================================
@@ -89,11 +107,7 @@ public class ModeloStrategy
                         config.getPromptFinal()
                 );
 
-        // ==========================================
-        // LIMPIEZA DE RESPUESTA JSON
-        // ==========================================
-
-        return extraerRespuesta(json);
+        return parser.extraerRespuesta(json);
     }
 
     // ==========================================

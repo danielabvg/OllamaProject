@@ -1,3 +1,7 @@
+package com.ai.ollama.OllamaClient.Evaluation;
+
+import java.util.Set;
+
 // =====================================
 // EVALUADOR SEMÁNTICO
 // =====================================
@@ -18,12 +22,27 @@
 //
 // =====================================
 
-package com.ai.ollama.OllamaClient.Evaluation;
-
-import java.util.HashSet;
-import java.util.Set;
-
 public class SemanticEvaluator {
+
+    // =====================================
+    // TOKENIZER DESACOPLADO
+    // =====================================
+    //
+    // SemanticEvaluator ahora delega
+    // completamente el procesamiento
+    // textual.
+    //
+    // Esto permite:
+    //
+    // - bajo acoplamiento
+    // - reutilización
+    // - arquitectura limpia
+    // - SRP más puro
+    //
+    // =====================================
+
+    private final TextTokenizer tokenizer =
+            new TextTokenizer();
 
     // =====================================
     // JACCARD SIMILARITY
@@ -45,17 +64,17 @@ public class SemanticEvaluator {
     ) {
 
         Set<String> tokensRespuesta =
-                tokenizar(respuesta);
+                tokenizer.tokenizar(respuesta);
 
         Set<String> tokensReferencia =
-                tokenizar(referencia);
+                tokenizer.tokenizar(referencia);
 
         // =====================================
         // INTERSECCIÓN
         // =====================================
 
         Set<String> interseccion =
-                new HashSet<>(tokensRespuesta);
+                new java.util.HashSet<>(tokensRespuesta);
 
         interseccion.retainAll(
                 tokensReferencia
@@ -66,7 +85,7 @@ public class SemanticEvaluator {
         // =====================================
 
         Set<String> union =
-                new HashSet<>(tokensRespuesta);
+                new java.util.HashSet<>(tokensRespuesta);
 
         union.addAll(tokensReferencia);
 
@@ -79,23 +98,5 @@ public class SemanticEvaluator {
                 interseccion.size()
 
                 / union.size()) * 100;
-    }
-
-    // =====================================
-    // TOKENIZACIÓN
-    // =====================================
-
-    private Set<String> tokenizar(
-            String texto
-    ) {
-
-        String[] tokens =
-                texto.toLowerCase()
-                        .replaceAll("[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]", "")
-                        .split("\\s+");
-
-        return new HashSet<>(
-                java.util.Arrays.asList(tokens)
-        );
     }
 }

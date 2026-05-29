@@ -25,21 +25,7 @@ import com.ai.ollama.OllamaClient.Template.PromptConfig;
 
 public class AgenteConversacional {
 
-    // Estrategia/modelo activo.
-    // Puede ser:
-    // - ModeloStrategy(llama3)
-    // - ModeloStrategy(mistral)
-    // - ModeloStrategy(phi3)
-
     private IAStrategy estrategia;
-
-    // =====================================
-    // CONSTRUCTOR
-    // =====================================
-    //
-    // Recibe dinámicamente la estrategia
-    // mediante Inyección de Dependencias.
-    // =====================================
 
     public AgenteConversacional(
             IAStrategy estrategia

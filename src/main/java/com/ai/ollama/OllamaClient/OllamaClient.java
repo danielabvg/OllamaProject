@@ -16,11 +16,8 @@
 
 package com.ai.ollama.OllamaClient;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
+import com.ai.ollama.OllamaClient.services.HttpService;
+import com.ai.ollama.OllamaClient.services.RequestBodyBuilder;
 
 public class OllamaClient {
 
@@ -28,6 +25,28 @@ public class OllamaClient {
 
     private static final String URL_API =
             "http://localhost:11434/api/generate";
+
+    // =====================================
+    // COMPONENTES DESACOPLADOS
+    // =====================================
+    //
+    // OllamaClient ahora funciona como
+    // fachada/orquestador.
+    //
+    // Delegando:
+    //
+    // - construcción JSON
+    // - ejecución HTTP
+    //
+    // en componentes especializados.
+    //
+    // =====================================
+
+    private final RequestBodyBuilder bodyBuilder =
+            new RequestBodyBuilder();
+
+    private final HttpService httpService =
+            new HttpService();
 
     // =====================================
     // ENVÍO DE PETICIONES
@@ -43,76 +62,35 @@ public class OllamaClient {
     ) {
 
         // =====================================
-        // CONSTRUCCIÓN DEL JSON
+        // CONSTRUCCIÓN DESACOPLADA
         // =====================================
         //
-        // Se genera manualmente el body
-        // para enviarlo a la API de Ollama.
+        // La generación del JSON ahora está
+        // separada de la lógica HTTP.
+        //
         // =====================================
 
-        String jsonBody = String.format(
-                """
-                {
-                  "model": "%s",
-                  "prompt": "%s",
-                  "stream": false
-                }
-                """,
-                modelo,
-                prompt
-                        .replace("\"", "\\\"")
-                        .replace("\n", "\\n")
+        String jsonBody =
+                bodyBuilder.construirBody(
+                        modelo,
+                        prompt
+                );
+
+        // =====================================
+        // EJECUCIÓN HTTP DESACOPLADA
+        // =====================================
+        //
+        // Toda la comunicación HTTP ahora
+        // está encapsulada en HttpService.
+        //
+        // OllamaClient únicamente orquesta
+        // el flujo de inferencia.
+        //
+        // =====================================
+
+        return httpService.post(
+                URL_API,
+                jsonBody
         );
-
-        try {
-
-            // =====================================
-            // CLIENTE HTTP
-            // =====================================
-
-            HttpClient client =
-                    HttpClient.newBuilder()
-                            .connectTimeout(
-                                    Duration.ofSeconds(20)
-                            )
-                            .build();
-
-            // =====================================
-            // PETICIÓN HTTP POST
-            // =====================================
-
-            HttpRequest request =
-                    HttpRequest.newBuilder()
-                            .uri(URI.create(URL_API))
-                            .header(
-                                    "Content-Type",
-                                    "application/json"
-                            )
-                            .POST(
-                                    HttpRequest.BodyPublishers
-                                            .ofString(jsonBody)
-                            )
-                            .build();
-
-            // =====================================
-            // RESPUESTA DEL SERVIDOR
-            // =====================================
-
-            HttpResponse<String> response =
-                    client.send(
-                            request,
-                            HttpResponse.BodyHandlers
-                                    .ofString()
-                    );
-
-            return response.body();
-
-        } catch (Exception e) {
-
-            // Manejo básico de errores.
-
-            return "Error de conexión: "
-                    + e.getMessage();
-        }
     }
 }
