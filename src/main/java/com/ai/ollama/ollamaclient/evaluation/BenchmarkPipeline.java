@@ -1,3 +1,5 @@
+package com.ai.ollama.ollamaclient.evaluation;
+
 // =====================================
 // PIPELINE CENTRAL DE BENCHMARKING
 // =====================================
@@ -6,7 +8,7 @@
 //
 // - semantic evaluation
 // - consistency evaluation
-// - hallucination estimation
+// - heuristic hallucination estimation
 // - latency analysis
 // - weighted scoring
 //
@@ -15,15 +17,13 @@
 //
 // =====================================
 
-package com.ai.ollama.ollamaclient.evaluation;
-
 public class BenchmarkPipeline {
 
     public EvaluationResult ejecutarEvaluacion(
 
-            String respuesta,
+            String prompt,
 
-            String referencia,
+            String respuesta,
 
             String segundaRespuesta,
 
@@ -40,8 +40,8 @@ public class BenchmarkPipeline {
         ConsistencyEvaluator consistency =
                 new ConsistencyEvaluator();
 
-        HeuristicHallucinationEstimator hallucination =
-                new HeuristicHallucinationEstimator();
+        PromptDeviationRiskEstimator hallucination =
+                new PromptDeviationRiskEstimator();
 
         LatencyEvaluator latencyEvaluator =
                 new LatencyEvaluator();
@@ -58,8 +58,8 @@ public class BenchmarkPipeline {
 
         double semanticScore =
                 semantic.calcularSimilitudSemantica(
-                        respuesta,
-                        referencia
+                        prompt,
+                        respuesta
                 );
 
         double consistencyScore =
@@ -70,8 +70,8 @@ public class BenchmarkPipeline {
 
         double hallucinationRisk =
                 hallucination.estimarHallucinationRisk(
-                        respuesta,
-                        referencia
+                        prompt,
+                        respuesta
                 );
 
         double latencyScore =

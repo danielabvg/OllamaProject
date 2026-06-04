@@ -15,12 +15,12 @@ public class ResponseQualityAnalyzer {
             double score
     ) {
 
-        if (score >= 85) {
+        if (score >= 50) {
 
             return "HIGH QUALITY RESPONSE";
         }
 
-        if (score >= 65) {
+        if (score >= 25) {
 
             return "MODERATE QUALITY RESPONSE";
         }

@@ -3,6 +3,7 @@ package com.ai.ollama.ollamaclient.evaluation;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 // =====================================
 // TOKENIZADOR DE TEXTO
@@ -20,49 +21,86 @@ import java.util.Set;
 // - mantenibilidad
 // - escalabilidad
 //
-// Esto permite reutilizar tokenización
-// en:
-//
-// - benchmarking
-// - NLP
-// - embeddings
-// - búsqueda semántica
-// - análisis textual
-//
 // =====================================
 
 public class TextTokenizer {
 
     // =====================================
-    // TOKENIZACIÓN
+    // STOPWORDS
     // =====================================
-    //
-    // Convierte texto libre en un conjunto
-    // limpio de tokens.
-    //
-    // El proceso incluye:
-    //
-    // - lowercase normalization
-    // - eliminación de símbolos
-    // - separación por espacios
-    // - eliminación de duplicados
-    //
+
+    private static final Set<String> STOPWORDS =
+            Set.of(
+
+                    "de",
+                    "la",
+                    "el",
+                    "los",
+                    "las",
+
+                    "un",
+                    "una",
+                    "unos",
+                    "unas",
+
+                    "y",
+                    "o",
+
+                    "que",
+                    "en",
+                    "del",
+                    "al",
+
+                    "es",
+                    "son",
+                    "se",
+
+                    "por",
+                    "para",
+                    "con",
+                    "sin",
+
+                    "a"
+            );
+
+    // =====================================
+    // TOKENIZACIÓN
     // =====================================
 
     public Set<String> tokenizar(
             String texto
     ) {
 
+        if (texto == null ||
+                texto.isBlank()) {
+
+            return new HashSet<>();
+        }
+
         String[] tokens =
                 texto.toLowerCase()
                         .replaceAll(
-                                "[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]",
-                                ""
+                                "[^a-zA-ZáéíóúÁÉÍÓÚñÑ]",
+                                " "
                         )
                         .split("\\s+");
 
-        return new HashSet<>(
-                Arrays.asList(tokens)
-        );
+        return Arrays.stream(tokens)
+
+                .filter(
+                        token ->
+                                !token.isBlank()
+                )
+
+                .filter(
+                        token ->
+                                !STOPWORDS.contains(
+                                        token
+                                )
+                )
+
+                .collect(
+                        Collectors.toSet()
+                );
     }
 }

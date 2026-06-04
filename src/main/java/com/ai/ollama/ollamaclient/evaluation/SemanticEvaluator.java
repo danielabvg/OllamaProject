@@ -1,102 +1,65 @@
 package com.ai.ollama.ollamaclient.evaluation;
 
+import java.util.HashSet;
 import java.util.Set;
 
 // =====================================
-// EVALUADOR SEMÁNTICO
+// EVALUADOR DE COBERTURA CONCEPTUAL
 // =====================================
 //
-// Esta clase calcula similitud semántica
-// aproximada entre:
+// Mide qué porcentaje de la respuesta
+// contiene conceptos presentes en el
+// prompt.
 //
-// - respuesta generada
-// - conceptos esperados
-//
-// Utiliza:
-//
-// - Jaccard Similarity
-// - Token Overlap
-//
-// Inspirado en métricas utilizadas
-// en benchmarking de NLP.
+// Se utiliza como una aproximación
+// heurística de alineación entre
+// prompt y respuesta.
 //
 // =====================================
 
 public class SemanticEvaluator {
 
-    // =====================================
-    // TOKENIZER DESACOPLADO
-    // =====================================
-    //
-    // SemanticEvaluator ahora delega
-    // completamente el procesamiento
-    // textual.
-    //
-    // Esto permite:
-    //
-    // - bajo acoplamiento
-    // - reutilización
-    // - arquitectura limpia
-    // - SRP más puro
-    //
-    // =====================================
-
     private final TextTokenizer tokenizer =
             new TextTokenizer();
 
-    // =====================================
-    // JACCARD SIMILARITY
-    // =====================================
-    //
-    // Fórmula:
-    //
-    // intersección / unión
-    //
-    // Retorna porcentaje de similitud.
-    //
-    // =====================================
-
     public double calcularSimilitudSemantica(
 
-            String respuesta,
+            String prompt,
 
-            String referencia
+            String respuesta
     ) {
 
+        Set<String> tokensPrompt =
+                tokenizer.tokenizar(
+                        prompt
+                );
+
         Set<String> tokensRespuesta =
-                tokenizer.tokenizar(respuesta);
+                tokenizer.tokenizar(
+                        respuesta
+                );
 
-        Set<String> tokensReferencia =
-                tokenizer.tokenizar(referencia);
+        Set<String> coincidencias =
+                new HashSet<>(
+                        tokensRespuesta
+                );
 
-        // =====================================
-        // INTERSECCIÓN
-        // =====================================
-
-        Set<String> interseccion =
-                new java.util.HashSet<>(tokensRespuesta);
-
-        interseccion.retainAll(
-                tokensReferencia
+        coincidencias.retainAll(
+                tokensPrompt
         );
 
-        // =====================================
-        // UNIÓN
-        // =====================================
+        if (tokensRespuesta.isEmpty()) {
 
-        Set<String> union =
-                new java.util.HashSet<>(tokensRespuesta);
+            return 0;
+        }
 
-        union.addAll(tokensReferencia);
+        return (
 
-        // =====================================
-        // CÁLCULO FINAL
-        // =====================================
+                (double)
+                        coincidencias.size()
 
-        return ((double)
+                        / tokensRespuesta.size()
 
-                interseccion.size()
-
-                / union.size()) * 100;
+        ) * 100;
     }
 }

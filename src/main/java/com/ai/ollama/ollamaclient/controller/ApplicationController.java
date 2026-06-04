@@ -1,9 +1,9 @@
 package com.ai.ollama.ollamaclient.controller;
 
+import com.ai.ollama.ollamaclient.OllamaClient;
 import com.ai.ollama.ollamaclient.context.ModeloStrategy;
 import com.ai.ollama.ollamaclient.modes.AutomaticPromptMode;
 import com.ai.ollama.ollamaclient.modes.ManualPromptMode;
-import com.ai.ollama.ollamaclient.OllamaClient;
 import com.ai.ollama.ollamaclient.strategy.IAStrategy;
 import com.ai.ollama.ollamaclient.utils.ConsoleManager;
 
@@ -54,6 +54,10 @@ public class ApplicationController {
         }
     }
 
+    // =====================================
+    // MODO AUTOMÁTICO
+    // =====================================
+
     private void ejecutarModoAutomatico(
             int opcionModelo
     ) {
@@ -85,14 +89,18 @@ public class ApplicationController {
         );
     }
 
+    // =====================================
+    // MODO MANUAL
+    // =====================================
+
     private void ejecutarModoManual(
             int opcionModelo
     ) {
 
-        if (opcionModelo == 4) {
+        String prompt =
+                console.leerPromptManual();
 
-            String prompt =
-                    console.leerPromptManual();
+        if (opcionModelo == 4) {
 
             ManualPromptMode manual =
                     new ManualPromptMode();
@@ -110,11 +118,15 @@ public class ApplicationController {
 
         modo.ejecutar(
 
-                console.getScanner(),
+                prompt,
 
                 opcionModelo
         );
     }
+
+    // =====================================
+    // FACTORY DE MODELOS
+    // =====================================
 
     private IAStrategy[] crearModelos() {
 

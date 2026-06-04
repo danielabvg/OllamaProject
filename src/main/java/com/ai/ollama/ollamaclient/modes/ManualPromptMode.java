@@ -7,48 +7,15 @@ import com.ai.ollama.ollamaclient.prompting.PromptStrategyDetector;
 import com.ai.ollama.ollamaclient.strategy.IAStrategy;
 import com.ai.ollama.ollamaclient.template.PromptConfig;
 
-import java.util.Scanner;
-
-// =====================================
-// MODO DE PROMPT MANUAL
-// =====================================
-//
-// Permite:
-//
-// - pegar prompts externos
-// - usar prompts personalizados
-// - detectar automáticamente
-//   la técnica de prompting
-//
-// Técnicas soportadas:
-//
-// - Zero-Shot
-// - Few-Shot
-// - Chain-of-Thought
-//
-// =====================================
-
 @SuppressWarnings("java:S106")
 public class ManualPromptMode {
 
-    // =====================================
-    // MODO INDIVIDUAL
-    // =====================================
-
     public void ejecutar(
 
-            Scanner scanner,
+            String promptManual,
 
             int opcionModelo
     ) {
-
-        System.out.print("""
-
-                Escribe tu prompt manual:
-                """);
-
-        String promptManual =
-                scanner.nextLine();
 
         PromptConfig config =
                 generarConfiguracion(
@@ -93,10 +60,6 @@ public class ManualPromptMode {
         );
     }
 
-    // =====================================
-    // BENCHMARK MULTIMODELO
-    // =====================================
-
     public void ejecutarBenchmark(
 
             String prompt,
@@ -131,10 +94,6 @@ public class ManualPromptMode {
         );
     }
 
-    // =====================================
-    // CONFIGURACIÓN
-    // =====================================
-
     private PromptConfig generarConfiguracion(
             String prompt
     ) {
@@ -156,10 +115,6 @@ public class ManualPromptMode {
         return config;
     }
 
-    // =====================================
-    // DETECCIÓN DE STRATEGY
-    // =====================================
-
     private PromptStrategy detectarStrategy(
             String prompt
     ) {
@@ -171,10 +126,6 @@ public class ManualPromptMode {
                 prompt
         );
     }
-
-    // =====================================
-    // VISUALIZAR STRATEGY
-    // =====================================
 
     private void mostrarStrategy(
             PromptStrategy strategy
@@ -193,10 +144,6 @@ public class ManualPromptMode {
                         .getSimpleName()
         );
     }
-
-    // =====================================
-    // FACTORY DE MODELOS
-    // =====================================
 
     private IAStrategy crearModelo(
             int opcion

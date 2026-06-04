@@ -1,3 +1,5 @@
+package com.ai.ollama.ollamaclient.evaluation;
+
 // =====================================
 // ESTIMADOR HEURÍSTICO DE HALLUCINATIONS
 // =====================================
@@ -6,40 +8,37 @@
 //
 // En su lugar:
 //
-// estima inconsistencias utilizando:
-//
-// - overlap semántico
-// - conceptos esperados
-// - cobertura contextual
+// estima riesgo heurístico de
+// desviación respecto a los
+// conceptos presentes en el prompt.
 //
 // Inspirado en evaluación heurística.
 //
 // =====================================
 
-package com.ai.ollama.ollamaclient.evaluation;
-
-public class HeuristicHallucinationEstimator {
+public class PromptDeviationRiskEstimator {
 
     // =====================================
-    // ESTIMACIÓN DE RIESGO DE HALLUCINATION
+    // ESTIMACIÓN DE RIESGO
     // =====================================
 
     public double estimarHallucinationRisk(
 
-            String respuesta,
+            String prompt,
 
-            String referenciaEsperada
+            String respuesta
     ) {
 
         SemanticEvaluator evaluator =
                 new SemanticEvaluator();
 
         double similitud =
-                evaluator
-                        .calcularSimilitudSemantica(
-                                respuesta,
-                                referenciaEsperada
-                        );
+                evaluator.calcularSimilitudSemantica(
+
+                        prompt,
+
+                        respuesta
+                );
 
         // =====================================
         // MENOR SIMILITUD =

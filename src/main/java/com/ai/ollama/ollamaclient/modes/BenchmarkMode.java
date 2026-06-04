@@ -10,22 +10,10 @@ import com.ai.ollama.ollamaclient.template.PromptConfig;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.ToDoubleFunction;
 
 @SuppressWarnings("java:S106")
 public class BenchmarkMode {
-
-    // =====================================
-    // FORMATO DE TABLA DE COMPARACIÓN
-    // =====================================
-    //
-    // SonarQube recomienda evitar la
-    // duplicación de literales.
-    //
-    // Este formato es reutilizado para
-    // imprimir las filas de la tabla
-    // comparativa del benchmark.
-    //
-    // =====================================
 
     private static final String FORMATO_TABLA =
             "%-30s %-20s%n";
@@ -94,23 +82,23 @@ public class BenchmarkMode {
         EvaluationResult resultado =
                 obtenerEvaluacion(
 
+                        config.getPromptFinal(),
                         respuesta,
-
                         segundaRespuesta,
-
                         latency
                 );
 
         System.out.printf(
 
                 """
-                        
-                        =====================================
-                        
-                        Resultados de la evaluación del modelo %s
-                        =====================================
-                        %n""", estrategia.getNombreVisual()
 
+                =====================================
+
+                Resultados de la evaluación del modelo %s
+                =====================================
+                %n""",
+
+                estrategia.getNombreVisual()
         );
 
         System.out.println();
@@ -120,34 +108,29 @@ public class BenchmarkMode {
                         + strategy.getClass().getSimpleName()
         );
 
-        System.out.println(
-                "Semantic Similarity: "
-                        + resultado.semanticSimilarity()
-                        + "%"
+        System.out.printf(
+                "Semantic Similarity: %.4f%%%n",
+                resultado.semanticSimilarity()
         );
 
-        System.out.println(
-                "Consistency Score: "
-                        + resultado.consistencyScore()
-                        + "%"
+        System.out.printf(
+                "Consistency Score: %.4f%%%n",
+                resultado.consistencyScore()
         );
 
-        System.out.println(
-                "Hallucination Risk: "
-                        + resultado.hallucinationRisk()
-                        + "%"
+        System.out.printf(
+                "Hallucination Risk: %.4f%%%n",
+                resultado.hallucinationRisk()
         );
 
-        System.out.println(
-                "Latency Score: "
-                        + resultado.latencyScore()
-                        + "%"
+        System.out.printf(
+                "Latency Score: %.4f%%%n",
+                resultado.latencyScore()
         );
 
-        System.out.println(
-                "Final Composite Score: "
-                        + resultado.finalScore()
-                        + "%"
+        System.out.printf(
+                "Final Composite Score: %.4f%%%n",
+                resultado.finalScore()
         );
 
         System.out.println(
@@ -158,13 +141,14 @@ public class BenchmarkMode {
         System.out.printf(
 
                 """
-                        
-                        =====================================
-                        
-                        Respuesta del modelo %s
-                        =====================================
-                        %n""", estrategia.getNombreVisual()
 
+                =====================================
+
+                Respuesta del modelo %s
+                =====================================
+                %n""",
+
+                estrategia.getNombreVisual()
         );
 
         System.out.println();
@@ -189,21 +173,9 @@ public class BenchmarkMode {
         );
     }
 
-// EVALUACIÓN DEL MODELO
-// =====================================
-//
-// Centraliza toda la lógica de
-// benchmarking y evaluación.
-//
-// Facilita:
-//
-// - reutilización
-// - mantenibilidad
-// - pruebas unitarias
-//
-// =====================================
-
     private EvaluationResult obtenerEvaluacion(
+
+            String prompt,
 
             String respuesta,
 
@@ -212,76 +184,104 @@ public class BenchmarkMode {
             long latency
     ) {
 
-        String referencia =
-                """
-                arquitectura modular orientada
-                a objetos utilizando patrones
-                de diseño y principios SOLID
-                """;
-
         BenchmarkPipeline pipeline =
                 new BenchmarkPipeline();
 
         return pipeline.ejecutarEvaluacion(
 
-                respuesta,
+                prompt,
 
-                referencia,
+                respuesta,
 
                 segundaRespuesta,
 
                 latency
         );
     }
+
+    private ModelBenchmarkResult obtenerMaximo(
+
+            List<ModelBenchmarkResult> resultados,
+
+            ToDoubleFunction<ModelBenchmarkResult> criterio
+    ) {
+
+        return resultados.stream()
+                .max(
+                        Comparator.comparingDouble(
+                                criterio
+                        )
+                )
+                .orElseThrow(
+                        () -> new IllegalStateException(
+                                "No existen resultados para comparar."
+                        )
+                );
+    }
+
+    private ModelBenchmarkResult obtenerMinimo(
+
+            List<ModelBenchmarkResult> resultados,
+
+            ToDoubleFunction<ModelBenchmarkResult> criterio
+    ) {
+
+        return resultados.stream()
+                .min(
+                        Comparator.comparingDouble(
+                                criterio
+                        )
+                )
+                .orElseThrow(
+                        () -> new IllegalStateException(
+                                "No existen resultados para comparar."
+                        )
+                );
+    }
+
     private void mostrarComparacion(
 
             List<ModelBenchmarkResult> resultados
     ) {
 
+        if (resultados.isEmpty()) {
+
+            System.out.println(
+                    "No hay resultados para comparar."
+            );
+
+            return;
+        }
+
         ModelBenchmarkResult mejorSemantic =
-                resultados.stream()
-                        .max(
-                                Comparator.comparingDouble(
-                                        ModelBenchmarkResult::semanticSimilarity
-                                )
-                        )
-                        .orElse(null);
+                obtenerMaximo(
+                        resultados,
+                        ModelBenchmarkResult::semanticSimilarity
+                );
 
         ModelBenchmarkResult mejorConsistency =
-                resultados.stream()
-                        .max(
-                                Comparator.comparingDouble(
-                                        ModelBenchmarkResult::consistencyScore
-                                )
-                        )
-                        .orElse(null);
+                obtenerMaximo(
+                        resultados,
+                        ModelBenchmarkResult::consistencyScore
+                );
 
         ModelBenchmarkResult mejorLatency =
-                resultados.stream()
-                        .max(
-                                Comparator.comparingDouble(
-                                        ModelBenchmarkResult::latencyScore
-                                )
-                        )
-                        .orElse(null);
+                obtenerMaximo(
+                        resultados,
+                        ModelBenchmarkResult::latencyScore
+                );
 
         ModelBenchmarkResult mejorHallucination =
-                resultados.stream()
-                        .min(
-                                Comparator.comparingDouble(
-                                        ModelBenchmarkResult::hallucinationRisk
-                                )
-                        )
-                        .orElse(null);
+                obtenerMinimo(
+                        resultados,
+                        ModelBenchmarkResult::hallucinationRisk
+                );
 
         ModelBenchmarkResult ganador =
-                resultados.stream()
-                        .max(
-                                Comparator.comparingDouble(
-                                        ModelBenchmarkResult::finalScore
-                                )
-                        )
-                        .orElse(null);
+                obtenerMaximo(
+                        resultados,
+                        ModelBenchmarkResult::finalScore
+                );
 
         System.out.println("""
 
@@ -300,7 +300,6 @@ public class BenchmarkMode {
                 "--------------------------------------------------------"
         );
 
-        assert mejorSemantic != null;
         System.out.printf(
                 FORMATO_TABLA,
                 "Semantic Similarity",
@@ -343,9 +342,9 @@ public class BenchmarkMode {
                         + ganador.modelo()
         );
 
-        System.out.println(
-                "Final Composite Score: "
-                        + ganador.finalScore()
+        System.out.printf(
+                "Final Composite Score: %.4f%n",
+                ganador.finalScore()
         );
     }
 }

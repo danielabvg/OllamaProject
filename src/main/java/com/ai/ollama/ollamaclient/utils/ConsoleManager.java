@@ -114,12 +114,27 @@ public class ConsoleManager {
 
         System.out.println("""
 
-                ==================================================
-                INGRESA TU PROMPT MANUAL
-                ==================================================
-                """);
+            ==================================================
+            INGRESA TU PROMPT MANUAL
+            (Escribe FIN en una línea nueva y presiona ENTER para enviar)
+            ==================================================
+            """);
 
-        return scanner.nextLine();
+        StringBuilder prompt = new StringBuilder();
+
+        while (true) {
+
+            String linea = scanner.nextLine();
+
+            if ("FIN".equalsIgnoreCase(linea.trim())) {
+                break;
+            }
+
+            prompt.append(linea)
+                    .append("\n");
+        }
+
+        return prompt.toString().trim();
     }
 
     // =====================================================
